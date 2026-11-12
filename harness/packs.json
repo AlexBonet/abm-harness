@@ -1,0 +1,104 @@
+{
+  "packs": {
+    "code": {
+      "kind": "always",
+      "files": [
+        "packs/code.md",
+        "checks/cod-01.sh",
+        "checks/cod-02.sh",
+        "checks/cod-03.sh",
+        "checks/cod-04.sh",
+        "checks/cod-05.sh",
+        "checks/cod-06.sh",
+        "checks/cod-07.sh",
+        "checks/cod-08.sh"
+      ]
+    },
+    "comms": {
+      "kind": "always",
+      "files": [
+        "packs/comms.md",
+        "checks/com-01.sh",
+        "checks/com-02.sh",
+        "checks/com-03.sh",
+        "checks/com-04.sh"
+      ]
+    },
+    "code-kotlin": {
+      "kind": "stack",
+      "files": [
+        "packs/code-kotlin.md",
+        "checks/stack/kotlin.sh"
+      ]
+    },
+    "code-astro-react": {
+      "kind": "stack",
+      "files": [
+        "packs/code-astro-react.md",
+        "checks/stack/astro-react.sh"
+      ]
+    },
+    "code-pnpm": {
+      "kind": "profile",
+      "profile": "abm-estricto",
+      "files": [
+        "packs/code-pnpm.md",
+        "checks/cod-09.sh"
+      ]
+    },
+    "data": {
+      "kind": "detect",
+      "files": [
+        "packs/data.md",
+        "checks/mig-lib.sh",
+        "checks/mig-01.sh",
+        "checks/mig-02.sh",
+        "checks/mig-03.sh",
+        "checks/mig-04.sh"
+      ]
+    },
+    "security": {
+      "kind": "always",
+      "files": [
+        "packs/security.md",
+        "checks/sec-patterns.txt",
+        "checks/sec-01.sh",
+        "checks/sec-02.sh",
+        "checks/sec-03.sh"
+      ]
+    },
+    "deploy": {
+      "kind": "always",
+      "files": [
+        "packs/deploy.md",
+        "checks/dep-lib.sh",
+        "checks/dep-01.sh",
+        "checks/dep-02.sh",
+        "checks/dep-03.sh",
+        "checks/dep-04.sh"
+      ]
+    },
+    "design": {
+      "kind": "detect",
+      "files": [
+        "packs/design.md",
+        "checks/dsn-01.sh",
+        "checks/dsn-02.sh"
+      ]
+    },
+    "seo": {
+      "kind": "optional",
+      "files": [
+        "packs/seo.md",
+        "checks/seo-lib.sh",
+        "checks/seo-01.sh",
+        "checks/seo-02.sh",
+        "checks/seo-03.sh",
+        "checks/seo-04.sh",
+        "checks/seo-05.sh",
+        "checks/seo-06.sh",
+        "checks/seo-07.sh"
+      ]
+    }
+  }
+}

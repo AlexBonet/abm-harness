@@ -1,0 +1,32 @@
+#!/bin/sh
+# ABMS push guard (SPEC-ABMS-003 FR-07, SPEC-ABMS-012 FR-06): SEC-01 for everyone, then agents never push to main/master.
+
+SCAN="{{ABMH}}checks/sec-01.sh"
+if [ -f "$SCAN" ]; then
+  found=$(sh "$SCAN" < /dev/null 2>&1)
+  if [ $? -eq 1 ]; then
+    echo "$found" >&2
+    echo "ABMS: SEC-01 encontró un posible secreto, push bloqueado. Quítalo o {{ASK_OWNER}} si es un falso positivo (lista de permitidos en la carpeta de docs)." >&2
+    exit 1
+  fi
+fi
+
+AGENT_MARKERS="AI_AGENT CLAUDECODE"
+PROTECTED="refs/heads/main refs/heads/master"
+
+agent=""
+for marker in $AGENT_MARKERS; do
+  eval "value=\${$marker:-}"
+  [ -n "$value" ] && agent="$marker" && break
+done
+[ -z "$agent" ] && exit 0
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  for ref in $PROTECTED; do
+    if [ "$remote_ref" = "$ref" ]; then
+      echo "ABMS: los agentes no hacen push a main. Abre una rama o {{ASK_OWNER}}. (${ref#refs/heads/}, marcador $agent)" >&2
+      exit 1
+    fi
+  done
+done
+exit 0

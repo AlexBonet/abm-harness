@@ -1,0 +1,10 @@
+aws-access-key:(AKIA|ASIA)[0-9A-Z]{16}
+private-key:-----BEGIN [A-Z ]*PRIVATE KEY-----
+github-token:gh[pousr]_[A-Za-z0-9]{36,}
+github-token-fine:github_pat_[A-Za-z0-9_]{50,}
+slack-token:xox[baprs]-[A-Za-z0-9-]{10,}
+stripe-live-key:[sr]k_live_[A-Za-z0-9]{16,}
+anthropic-key:sk-ant-[A-Za-z0-9_-]{20,}
+openai-key:(^|[^A-Za-z0-9])sk-(proj-)?[A-Za-z0-9_-]{32,}
+google-api-key:AIza[0-9A-Za-z_-]{35}
+generic-secret:(api[_-]?key|private[_-]?key|service[_-]?role[_-]?key|secret|token|passw(or)?d)[A-Za-z0-9_]*["']?[[:space:]]*[:=][[:space:]]*["'][A-Za-z0-9/+_=.-]{24,}["']

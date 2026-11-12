@@ -1,0 +1,28 @@
+{
+  "name": "abm-harness",
+  "version": "0.1.0",
+  "description": "Installs the ABMH harness into any project: plan first, accept by id, everything inside the project.",
+  "type": "module",
+  "bin": {
+    "abmh": "bin/abmh.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "files": [
+    "bin",
+    "src",
+    "harness",
+    "LICENSE",
+    "NOTICES.md"
+  ],
+  "license": "MIT",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexBonet/abm-harness.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AlexBonet/abm-harness/issues"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "strictOnly": [
+    "strict.md",
+    "core/templates/AGENT_CODER.template.md",
+    "core/templates/AGENT_REVIEWER.template.md",
+    "core/templates/AGENT_SCRUM.template.md",
+    "core/templates/DELIVERY_STRATEGY.template.md",
+    "core/templates/GAPS.template.md",
+    "core/templates/GLOSSARY.template.md",
+    "core/templates/MEMORY.template.md",
+    "core/templates/PROJECT_CONTEXT.template.md",
+    "core/templates/PROMPT.template.md",
+    "core/templates/RESULT_CONTRACT.template.md",
+    "core/templates/REVIEW_CHECKLIST.template.md",
+    "core/templates/SCHEMA.template.md",
+    "core/templates/SESSION_SUMMARY.template.md",
+    "core/templates/STATUS.template.md",
+    "core/templates/TDD_PROTOCOL.template.md",
+    "core/templates/init-template.sh.md"
+  ]
+}
