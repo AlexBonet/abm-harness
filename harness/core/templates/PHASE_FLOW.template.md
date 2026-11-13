@@ -132,10 +132,12 @@ Not every change needs the full SDD flow. The delegation harness defines thresho
 
 |Change type|Flow to use|Approval|
 |---|---|---|
-|Typo, one-line fix, config tweak|**Inline** — Coder fixes directly, then runs verify.sh|Human reviews the diff|
+|Typo, one-line fix, config tweak|**Inline** — Coder fixes directly, runs verify.sh, then launches the Reviewer itself|Reviewer APPROVED; human reads the verdict|
 |Small change: ≤ 2 files, no schema, RLS or contract change|**Collapsed SDD** — minimal PROPOSAL, SPEC and DESIGN merged into the TASK|Human approves the TASK|
 |Feature, refactor, multi-file change|**SDD** — Full flow from PROPOSAL|Human approves at gates|
 |Ambiguous, architectural, cross-cutting|**SDD with explicit risk flag** — Extra design review|Human + CEO approval|
+
+Every row ends with the Revisión gate (`{{ABMH}}gates/review.md`): the Coder launches the Reviewer once the requested work is done.
 
 The SCRUM agent classifies the change type. The human can override the classification.
 

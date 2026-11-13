@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { extractBlock, inspectBlock, removeBlock } from './block.mjs'
+import { guardRemoval, removeGuard } from './claudehooks.mjs'
 import { applyFailed } from './errors.mjs'
 import { atomicWrite, fileSha, lstatOrNull, sha256 } from './fsutil.mjs'
 import { readConfig, setLocalConfig, unsetLocalConfig } from './git.mjs'
@@ -56,6 +57,7 @@ const REMOVERS = {
   file: fileRemoval,
   block: blockRemoval,
   gitconfig: configRemoval,
+  claudehooks: guardRemoval,
   dir: (root, entry) => (entry.path === '.abmh' || !entry.createdByInstaller ? null : { op: 'remove-dir', group: 'remove', path: entry.path, reason: 'created by the installer, removed if empty' }),
 }
 
@@ -93,6 +95,7 @@ const EXECUTORS = {
   },
   'remove-block': removeFromBlock,
   'restore-config': restoreConfig,
+  'remove-claude-hooks': removeGuard,
   'remove-dir': removeDirIfEmpty,
   skip: () => {},
 }

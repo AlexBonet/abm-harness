@@ -62,6 +62,7 @@ Before declaring any task DONE, all must pass:
 - [ ] `shared-domain/SPEC-*.md` each ≤ 8 KB
 - [ ] Spec axis: every requirement of the originating SPEC/TASK/FEATURE is covered and nothing unrequested was added (checked by the Reviewer, separate from the Standards axis above, at the depth of §8)
 - [ ] Rule packs: `{{ABMH}}checks/check.sh prueba` has no FAIL; a check that reports NOT RUN is listed as NOT RUN, never ticked
+- [ ] Revisión gate (`{{ABMH}}gates/review.md`): the Coder launched the Reviewer itself and the verdict is APPROVED for the current `Diff:`. A second REJECTED stops the task and goes to {{OWNER}}.
 - [ ] Review-during-implementation check (§10): every Reviewer finding is verified against the code and every decision is logged in the SPEC's §10. If this check fails, the task cannot be marked DONE.
 
 ---
@@ -73,6 +74,7 @@ After any work, return this exact structure:
 ```
 En corto: <one sentence in Spanish: outcome + what {{OWNER}} must do, or "nada que decidir">
 Lane: <Consulta | Cambio | SPEC corta | SDD | Bug | Deploy> · Tier: <pasivo | medio | alto>
+Review: <APPROVED | REJECTED, stopped> · <reviewer family and model> · Round: <1 | 2> · Diff: <fingerprint>
 Changed: <files touched, 1 line>
 Tested: <commands run + result, 1 line>
 Not done: <anything skipped, with reason, 1 line>
@@ -124,15 +126,15 @@ Risk first, then lane. Measure the risk of every request before choosing; the fi
 
 ## 8. Review depth
 
-Assign one tier when closing a change; it sets the review depth.
+Assign one tier when closing a change; it sets the review depth. Every whole task that leaves a change, in any lane and docs included, ends with the Revisión gate (`{{ABMH}}gates/review.md`): the Coder launches the Reviewer itself, picks its size and family there, and stops after a second REJECTED.
 
 | Tier | When | Review |
 |---|---|---|
-| `pasivo` | only docs/markdown, no code or config | Verify Gate only |
+| `pasivo` | only docs/markdown, no code or config | one small Reviewer pass: clear, true to the code, consistent |
 | `medio` | code inside one module, tests would catch a regression; the minimum for the SPEC corta lane | one Reviewer pass, the axis that fits (Standards or Spec) |
 | `alto` | any always-SDD item, or no test would catch a regression | full Reviewer (both axes) + 4R checklist: Risk, Resilience, Readability, Reliability |
 
-Every verdict records `Tier:` and `Diff:` — the reviewed diff fingerprint (`git diff <base> | shasum -a 256`, first 12 chars, or a commit SHA; outside git, the list of files). If the diff changes after the verdict, the verdict no longer applies.
+Every verdict records `Tier:`, `Reviewer:` (family and model), `Round:` (1 or 2) and `Diff:` — the reviewed diff fingerprint (`git diff <base> | shasum -a 256`, first 12 chars, or a commit SHA; outside git, the list of files). If the diff changes after the verdict, the verdict no longer applies.
 
 ## 9. Delegation
 
@@ -142,6 +144,7 @@ Spawn a subagent only for a named reason, stated in one line before spawning:
 - **Parallel writers:** independent units with disjoint files, each worth several minutes.
 - **Context backstop:** a long session hands its next bounded unit to a fresh worker.
 - **Independent verifier:** tier `alto`.
+- **Reviewer:** always, once per whole task (Revisión gate); this is not optional and needs no reason line.
 
 No reason → work inline. A subagent costs a fresh session and quota.
 

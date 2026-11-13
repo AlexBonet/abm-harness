@@ -14,11 +14,11 @@
 3. {{OWNER}} confirms the summary. Nothing is built before that.
 4. Implement; tests first where the project has tests.
 5. A clean-context Reviewer reviews the work while it is built, at tier `medio` or higher (`{{CORE}}AGENT_BASELINE.md` §8, §10). Check each finding against the code and log each decision in the SPEC.
-6. Run the Verify Gate.
+6. Run the Verify Gate, then launch the final Reviewer yourself (Revisión gate). A second REJECTED stops and goes to {{OWNER}}.
 
 ## Ends when
 
-- Every acceptance item is ticked with evidence, the Reviewer verdict records `Tier:` and `Diff:`, and the Verify Gate passes.
+- Every acceptance item is ticked with evidence, the Verify Gate passes, and the final Reviewer verdict is APPROVED with `Tier:`, `Diff:`, `Reviewer:` and `Round:`.
 
 ## Gates
 

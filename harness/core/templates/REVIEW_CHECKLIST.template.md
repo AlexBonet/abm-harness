@@ -121,8 +121,14 @@ One or more checklist items fail. List every violation with file, line, and rule
 
 ## Verdict format
 
+Same first five lines as the Reviewer verdict (`AGENT_REVIEWER` §6), read by `{{ABMH}}reviewer/review.sh`.
+
 ```
-## VERDICT: APPROVED | REJECTED
+APPROVED
+Tier: medio
+Diff: <fingerprint given in the request>
+Reviewer: <family> <model>
+Round: <1 | 2>
 
 ### Evidence
 - verify.sh exit code: {0|non-zero}

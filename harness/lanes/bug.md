@@ -12,12 +12,12 @@
 2. Diagnose with the `diagnose` skill (`{{CORE}}protocols/DIAGNOSE.md`): reproduce, isolate, state the cause in one line.
 3. Write a regression test that fails before the fix.
 4. Make the smallest fix that makes it pass.
-5. One clean-context Reviewer pass: tier `medio`, `alto` if data is involved.
-6. Run the Verify Gate.
+5. Run the Verify Gate.
+6. Launch the Reviewer yourself (Revisión gate): tier `medio`, `alto` if data is involved. A second REJECTED stops and goes to {{OWNER}}.
 
 ## Ends when
 
-- The test failed before and passes after, and the cause is written down in one line.
+- The test failed before and passes after, the cause is written down in one line, and the Reviewer verdict is APPROVED.
 
 ## Gates
 

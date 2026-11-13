@@ -4,11 +4,11 @@ import { test } from 'node:test'
 import { formatSettings } from '../src/settings.mjs'
 import { abmh, exists, install, makeRepo, manifestOf, read, removeAll, snapshot } from './helpers.mjs'
 
-test('init writes harness.yaml with exactly version, profile, docsDir, packs and the pending stack', () => {
+test('init writes harness.yaml with exactly version, profile, docsDir, packs, the pending stack and the reviewer', () => {
   const dir = makeRepo()
   assert.equal(install(dir).code, 0)
   const version = manifestOf(dir).harnessVersion
-  assert.equal(read(dir, '.abmh/harness.yaml'), `version: ${version}\nprofile: universal\ndocsDir: 00-docs\npacks: code,comms,security,deploy\nstack: pending\n`)
+  assert.equal(read(dir, '.abmh/harness.yaml'), `version: ${version}\nprofile: universal\ndocsDir: 00-docs\nreviewer: opposite\npacks: code,comms,security,deploy\nstack: pending\n`)
 })
 
 test('harness.yaml is tracked in the manifest like any installed file', () => {
@@ -38,5 +38,5 @@ test('a hand-edited harness.yaml survives update', () => {
 })
 
 test('formatSettings writes exactly the keys it is given', () => {
-  assert.equal(formatSettings({ version: 'abc', profile: 'universal', docsDir: 'x/y', packs: ['code'], pending: false }), 'version: abc\nprofile: universal\ndocsDir: x/y\npacks: code\n')
+  assert.equal(formatSettings({ version: 'abc', profile: 'universal', docsDir: 'x/y', packs: ['code'], pending: false }), 'version: abc\nprofile: universal\ndocsDir: x/y\nreviewer: opposite\npacks: code\n')
 })

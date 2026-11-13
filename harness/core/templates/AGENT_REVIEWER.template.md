@@ -34,12 +34,17 @@ See `{{CORE}}AGENT_BASELINE.md` §3. Verifier must run `./verify.sh` and capture
 
 ## 6. Post-Flight Report (Verdict Format)
 
+The first five lines are read by `{{ABMH}}reviewer/review.sh`: write them exactly like this (first line `APPROVED` or `REJECTED`), with no Markdown, no bullets and nothing else on each line.
+
 ```
-## VERDICT: APPROVED | REJECTED
+APPROVED
+Tier: medio
+Diff: <fingerprint given in the request>
+Reviewer: <family> <model>
+Round: <1 | 2>
 
 ### Evidence
-- Tier: [pasivo | medio | alto] — depth per `{{CORE}}AGENT_BASELINE.md` §8
-- Diff: [fingerprint: `git diff <base> | shasum -a 256` first 12 chars, or commit SHA]
+- Depth per `{{CORE}}AGENT_BASELINE.md` §8; a second REJECTED stops the task and goes to {{OWNER}}
 - verify.sh exit code: [0|non-zero]
 - Files changed: [count]
 - Git diff summary: [1-line summary]
