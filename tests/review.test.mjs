@@ -229,3 +229,30 @@ test('round 2 is narrower: the reviewer gets the round-1 findings and blocks onl
   review(p, ['--coder', 'claude', '--size', 'small'])
   assert.match(calls(p).split('codex exec').at(-1), /Round 1: a full review/)
 })
+
+test('a shared harness folder outside the repo reviews the repo the command runs in', () => {
+  const p = project()
+  const shared = tempDir()
+  fs.mkdirSync(path.join(shared, '_system/reviewer'), { recursive: true })
+  for (const name of fs.readdirSync(path.join(HARNESS, 'reviewer'))) fs.copyFileSync(path.join(HARNESS, 'reviewer', name), path.join(shared, '_system/reviewer', name))
+  change(p)
+  const env = { PATH: `${p.bin}:/usr/bin:/bin`, STUB_LOG: p.log, STUB_VERDICT: 'APPROVED', HOME: p.bin }
+  const result = spawnSync('sh', [path.join(shared, '_system/reviewer/review.sh'), '--coder', 'claude', '--size', 'small'], { cwd: p.dir, env, encoding: 'utf8' })
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(calls(p), new RegExp(`-C ${p.dir.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')} `))
+  assert.match(calls(p), new RegExp(`Read ${shared.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}/_system/agents/reviewer\\.md`))
+  const blocked = spawnSync('sh', [path.join(shared, '_system/reviewer/guard.sh'), 'stop'], { cwd: p.dir, env: { PATH: '/usr/bin:/bin' }, input: '{"session_id":"x"}', encoding: 'utf8' })
+  assert.doesNotMatch(blocked.stdout, /block/)
+})
+
+test('the guard answer stays valid JSON when the harness path has quotes or backslashes', () => {
+  const p = project()
+  const odd = path.join(tempDir(), 'a "b" \\c')
+  fs.mkdirSync(path.join(odd, '_system/reviewer'), { recursive: true })
+  for (const name of fs.readdirSync(path.join(HARNESS, 'reviewer'))) fs.copyFileSync(path.join(HARNESS, 'reviewer', name), path.join(odd, '_system/reviewer', name))
+  change(p)
+  const result = spawnSync('sh', [path.join(odd, '_system/reviewer/guard.sh'), 'stop'], { cwd: p.dir, env: { PATH: '/usr/bin:/bin' }, input: '{"session_id":"x"}', encoding: 'utf8' })
+  const answer = JSON.parse(result.stdout)
+  assert.equal(answer.decision, 'block')
+  assert.ok(answer.reason.includes(`${odd}/_system/reviewer/review.sh`))
+})

@@ -78,8 +78,8 @@ default_model() {
 }
 
 fp=$(fingerprint)
-baseline="$REL/core/AGENT_BASELINE.md"
-[ -f "$ABMH_DIR/core/AGENT_BASELINE.md" ] || baseline="$REL/AGENT_BASELINE.md"
+baseline="$ABMH_DIR/core/AGENT_BASELINE.md"
+[ -f "$baseline" ] || baseline="$ABMH_DIR/AGENT_BASELINE.md"
 
 scope="Round 1: a full review."
 if [ "$round" -eq 2 ] && [ -f "$findings_file" ]; then
@@ -92,7 +92,7 @@ run_family() {
   model=${model:-$(default_model "$family" "$size")}
   out="$state/$fp.$family.out"
   log="$state/$fp.$family.log"
-  prompt="You are the Reviewer of this project's ABMH harness, with clean context: you have not seen the coder's reasoning. Read $REL/agents/reviewer.md, $REL/gates/review.md and section 8 of $baseline.
+  prompt="You are the Reviewer of this project's ABMH harness, with clean context: you have not seen the coder's reasoning. Read $ABMH_DIR/agents/reviewer.md, $ABMH_DIR/gates/review.md and section 8 of $baseline.
 Task that was asked: $task
 Review the uncommitted changes in this folder: run 'git diff HEAD -- .' and 'git status --porcelain -- .', and read new untracked files. Read-only: do not edit anything, and do not read secrets (.env files, credentials, keys, auth or token files).
 Task size: $size. Review depth: the tier of section 8 that fits the change.
@@ -104,7 +104,7 @@ Reply with the first line exactly APPROVED or REJECTED, with nothing else on it.
       ABMH_REVIEWING=1 codex exec -m "$model" -s read-only --skip-git-repo-check -C "$PROJECT" -o "$out" "$prompt" < /dev/null > "$log" 2>&1
       ;;
     claude)
-      (cd "$PROJECT" && ABMH_REVIEWING=1 claude -p --model "$model" --allowedTools "Read Grep Glob Bash(git diff:*) Bash(git status:*) Bash(git log:*) Bash(git show:*) Bash(git ls-files:*)" --disallowedTools "Edit Write NotebookEdit" "$prompt" < /dev/null > "$out" 2> "$log")
+      (cd "$PROJECT" && ABMH_REVIEWING=1 claude -p --model "$model" --add-dir "$ABMH_DIR" --allowedTools "Read Grep Glob Bash(git diff:*) Bash(git status:*) Bash(git log:*) Bash(git show:*) Bash(git ls-files:*)" --disallowedTools "Edit Write NotebookEdit" "$prompt" < /dev/null > "$out" 2> "$log")
       ;;
   esac
   verdict=""
