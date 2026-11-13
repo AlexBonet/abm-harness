@@ -20,7 +20,7 @@
 
 ## Gates
 
-- Despliegue (`{{ABMH}}gates/release.md`); also Seguridad when secrets are involved (`{{ABMH}}gates/security.md`).
+- Despliegue (`{{ABMH}}gates/release.md`); Revisión (`{{ABMH}}gates/review.md`) when the release leaves a change in the repo; also Seguridad when secrets are involved (`{{ABMH}}gates/security.md`).
 
 ## Escalates to SDD when
 

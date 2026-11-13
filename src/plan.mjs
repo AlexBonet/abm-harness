@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { extractBlock, inspectBlock, normalizeEol } from './block.mjs'
+import { CLAUDE_SETTINGS, claudeHooksActions } from './claudehooks.mjs'
 import { desiredState } from './desired.mjs'
 import { refused } from './errors.mjs'
 import { canonicalJson, fileSha, lstatOrNull, sha256 } from './fsutil.mjs'
@@ -121,6 +122,7 @@ export function freshPlan(ctx) {
     ...state.links.map((spec) => linkAction(root, spec)),
     ...state.blocks.map((block) => blockAction(root, block)),
     ...hookActions(hook),
+    ...claudeHooksActions(root, options, false),
   ]
   return makePlan('init', { ...ctx, options: planOptions }, actions)
 }
@@ -187,6 +189,7 @@ export function updatePlan(ctx) {
     const installed = manifest.entries.some((entry) => entry.path === spec.path)
     if (!installed) actions.push(linkAction(root, spec))
   }
+  actions.push(...claudeHooksActions(root, options, findEntry(manifest, 'claudehooks', CLAUDE_SETTINGS) !== undefined))
   for (const block of state.blocks) actions.push(...blockUpdate(root, block, manifest))
   actions.push(...retireActions(root, manifest, state, fileOps))
   return makePlan('update', { ...ctx, options }, actions)

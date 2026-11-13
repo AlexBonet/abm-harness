@@ -41,7 +41,7 @@
 ## 4. Proof and rollback
 
 - [ ] {acceptance item, maps to FR-NN}
-- [ ] The clean-context Reviewer verdict records `Tier:` and `Diff:`
+- [ ] The final clean-context Reviewer verdict is APPROVED and records `Tier:`, `Diff:`, `Reviewer:` and `Round:`
 - [ ] Verify Gate passes
 - **Rollback:** {how to undo and how long it takes}
 

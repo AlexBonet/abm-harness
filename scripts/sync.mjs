@@ -24,6 +24,7 @@ export const MAPPINGS = [
   { from: 'strict.md', to: '_system/strict.md' },
   { from: 'packs', to: '_system/packs', owns: () => true },
   { from: 'checks', to: '_system/checks', owns: () => true },
+  { from: 'reviewer', to: '_system/reviewer', owns: () => true },
   { from: 'hooks/pre-push', to: 'tools/git-hooks/pre-push' },
 ]
 

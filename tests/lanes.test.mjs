@@ -105,9 +105,19 @@ for (const profile of ['universal', 'abm-estricto']) {
   })
 }
 
-test('no gate says Revisión applies to Cambio, which the FR-04 matrix leaves with Prueba only', () => {
-  assert.doesNotMatch(source('gates/review.md'), /Cambio/)
+test('every lane that leaves a change passes the Revisión gate; Consulta writes nothing and does not', () => {
+  for (const name of LANES.filter((lane) => lane !== 'consult')) assert.match(source(`lanes/${name}.md`), /\{\{ABMH\}\}gates\/review\.md/, name)
+  assert.doesNotMatch(source('lanes/consult.md'), /gates\/review\.md/)
   assert.doesNotMatch(source('lanes/bug.md'), /payments/)
+})
+
+test('the Revisión gate states who launches it, the reviewer choice, the size rule and the two-round limit', () => {
+  const text = source('gates/review.md')
+  for (const needle of [/launched by the Coder/i, /`reviewer:`/, /opposite/, /Haiku/, /Sonnet/, /second REJECTED/i, /docs/i]) assert.match(text, needle)
+})
+
+test('the baseline no longer lets a docs-only change skip the Reviewer', () => {
+  assert.doesNotMatch(source('core/AGENT_BASELINE.md'), /Verify Gate only/)
 })
 
 test('update keeps an edited lane and remove deletes only the unedited harness files', () => {

@@ -13,16 +13,17 @@
 1. Measure the risk first, then pick the level.
 2. With FEATURE: create `features/FEATURE-NNN-{slug}.md` in the project docs from `{{CORE}}templates/FEATURE.template.md` before the first source edit. Tick an item only with observed evidence.
 3. Implement; tests first where the project has tests.
-4. Run the Verify Gate (`{{CORE}}AGENT_BASELINE.md` §3). Assign the tier of §8.
-5. Update the project docs only if something not derivable from the code changed.
+4. Update the project docs only if something not derivable from the code changed.
+5. Run the Verify Gate (`{{CORE}}AGENT_BASELINE.md` §3). Assign the tier of §8.
+6. Launch the Reviewer yourself (Revisión gate): APPROVED closes, one REJECTED is fixed and reviewed again, a second one stops and goes to {{OWNER}}.
 
 ## Ends when
 
-- The Verify Gate passes and the Post-Flight report is delivered.
+- The Verify Gate passes, the Reviewer verdict is APPROVED and the Post-Flight report is delivered.
 
 ## Gates
 
-- Prueba (`{{ABMH}}gates/test.md`).
+- Prueba (`{{ABMH}}gates/test.md`) and Revisión (`{{ABMH}}gates/review.md`), always.
 
 ## Escalates to SDD when
 

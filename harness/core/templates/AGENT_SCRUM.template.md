@@ -115,7 +115,7 @@ Human reviews, refines, approves
     ↓
 Human forwards prompt to Coder
     ↓
-Coder works, human commits
+Coder works, launches the Reviewer itself (Revisión gate), human commits
     ↓
 You update STATUS.md if milestone changed
 ```

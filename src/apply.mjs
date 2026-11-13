@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import { buildBlock, detectEol, insertBlock, inspectBlock, replaceBlock, toEol, extractBlock } from './block.mjs'
+import { writeGuard } from './claudehooks.mjs'
 import { applyFailed } from './errors.mjs'
 import { atomicWrite, fileSha, lstatOrNull, sha256, toPosix, walkFiles } from './fsutil.mjs'
 import { readConfig, setLocalConfig } from './git.mjs'
@@ -125,6 +126,11 @@ function applyConfig(state, action) {
   setLocalConfig(state.root, action.key, action.value)
 }
 
+function applyClaudeHooks(state, action) {
+  ensureDirs(state, path.dirname(path.join(state.root, action.path)))
+  upsertEntry(state.manifest, writeGuard(state.root, action))
+}
+
 const RUNNERS = {
   'create-file': writeHarnessFile,
   'update-file': writeHarnessFile,
@@ -133,6 +139,7 @@ const RUNNERS = {
   block: applyBlock,
   'update-block': applyBlock,
   config: applyConfig,
+  'claude-hooks': applyClaudeHooks,
   forget: (state, action) => removeEntry(state.manifest, action.kind, action.path),
   'retire-dir': (state, action) => {
     retireDir(state.root, action.path)

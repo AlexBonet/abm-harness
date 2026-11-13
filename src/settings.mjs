@@ -15,4 +15,4 @@ export function parseDocsDir(value) {
 }
 
 export const formatSettings = ({ version, profile, docsDir, packs, pending }) =>
-  `version: ${version}\nprofile: ${profile}\ndocsDir: ${docsDir}\npacks: ${packs.join(',')}\n${pending ? 'stack: pending\n' : ''}`
+  `version: ${version}\nprofile: ${profile}\ndocsDir: ${docsDir}\nreviewer: opposite\npacks: ${packs.join(',')}\n${pending ? 'stack: pending\n' : ''}`

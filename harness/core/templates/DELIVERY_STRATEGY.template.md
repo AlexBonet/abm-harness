@@ -13,7 +13,7 @@
 **Protocol:**
 - The Coder works normally.
 - The harness stops (asks the human) only when it detects risk: a failing test, an architectural boundary violation, or a change that exceeds the expected scope.
-- The human reviews the diff and decides whether to proceed.
+- When the task is done, the Coder launches the Reviewer itself (Revisión gate, `{{ABMH}}gates/review.md`); the human reads the verdict and the diff and decides whether to proceed.
 
 **Delivery:** Single commit or PR after human approval.
 
