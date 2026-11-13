@@ -28,6 +28,15 @@ src_files() {
   find . \( -name node_modules -o -name .git -o -name build -o -name dist -o -name .gradle -o -name .abmh -o -name .astro \) -prune -o -type f \( "$@" \) -print | sed 's|^\./||' | sort
 }
 
+web_syntax_enabled() {
+  [ "$STACK" = astro-react ] && [ "$(cfg web_syntax)" = true ]
+}
+
+check_web_code() {
+  EXT="$EXT mts cts cjs"
+  src_files | node "$HERE/web-code-check.mjs" "$1" "$(cfg generated_sources)" "$(docs_dir)"
+}
+
 each_stack() {
   seen=0
   passed=0

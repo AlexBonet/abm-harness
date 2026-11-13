@@ -4,6 +4,9 @@ import { sha256 } from './fsutil.mjs'
 import { harnessFiles, projectFiles } from './harness.mjs'
 import { DEFAULT_DOCS_DIR, DEFAULT_PROFILE, SETTINGS_PATH, formatSettings } from './settings.mjs'
 
+const CLAUDE_IGNORE_PATH = '.claude/.gitignore'
+const CLAUDE_IGNORE = '*\n'
+
 const docReason = (rel) =>
   rel.startsWith('project/decisions/') ? 'a place to record decisions' : rel.startsWith('project/tools/') ? 'a place to document connections' : 'project docs'
 
@@ -34,9 +37,13 @@ export function desiredState({ options, installHook, version }) {
     mode: 0o644,
   }
   const text = buildBlock(docsDir)
+  const links = linkSpecs(options.assistants)
+  const untracked = links.some((spec) => spec.path.startsWith('.claude/'))
+    ? [{ path: CLAUDE_IGNORE_PATH, content: CLAUDE_IGNORE, sha256: sha256(CLAUDE_IGNORE), mode: 0o644, group: 'claude', reason: '.claude/ never goes to git' }]
+    : []
   return {
-    files: [...files, generated, ...docs],
-    links: linkSpecs(options.assistants),
+    files: [...files, generated, ...untracked, ...docs],
+    links,
     blocks: instructionFiles(options.assistants).map((file) => ({ path: file, text, sha256: sha256(text) })),
   }
 }

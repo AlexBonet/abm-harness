@@ -2,6 +2,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 . "$HERE/lib.sh"
 
 check_ui_strings() {
+  if web_syntax_enabled; then check_web_code COD-05; return $?; fi
   allowlist="$(docs_dir)/ui-allowlist.txt"
   found=$(src_files | grep -vE "$TEST_RE" | while IFS= read -r file; do
     [ -f "$allowlist" ] && grep -qxF "$file" "$allowlist" && continue

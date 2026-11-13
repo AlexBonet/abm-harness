@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { spawnSync } from 'node:child_process'
+import { execFileSync, spawnSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'
 import { test } from 'node:test'
@@ -187,4 +187,36 @@ test('SEC-01 ignores deleted env files, env examples and symlinks, and knows pri
   assert.equal(sh(dir, 'sec-01.sh').code, 0)
   const names = gitDir({ 'a.env.ts': `PRIVATE_KEY = "${body(32)}"\nSERVICE_ROLE_KEY: '${body(40)}'\n` })
   assert.match(sh(names, 'sec-01.sh').out, /a\.env\.ts:1 generic-secret\na\.env\.ts:2 generic-secret/)
+})
+
+test('SEC-04 fails on a tracked .claude file at any depth and passes when ignored', () => {
+  const clean = gitDir({ 'README.md': 'x' }, '.claude/\n')
+  assert.equal(sh(clean, 'sec-04.sh').code, 0)
+  const dirty = gitDir({ 'README.md': 'x', 'pou/.claude/commands/review.md': 'x' })
+  execFileSync('git', ['add', '-A'], { cwd: dirty })
+  const result = sh(dirty, 'sec-04.sh')
+  assert.equal(result.code, 1)
+  assert.match(result.out, /pou\/\.claude\/commands\/review\.md: file under \.claude\//)
+})
+
+test('SEC-04 is NOT RUN outside a git repository', () => {
+  assert.equal(sh(project({ git: false, files: { 'a.txt': 'x' } }), 'sec-04.sh').code, 2)
+})
+
+test('the installed pre-push hook blocks a tracked .claude file for people and agents', () => {
+  const dir = makeRepo({ 'README.md': 'x\n' })
+  install(dir)
+  write(dir, '.claude/commands/review.md', 'x\n')
+  execFileSync('git', ['add', '-f', '.claude/commands/review.md'], { cwd: dir })
+  for (const agent of [false, true]) {
+    const result = push(dir, { agent })
+    assert.equal(result.status, 1)
+    assert.match(result.stderr, /SEC-04/)
+  }
+})
+
+test('SEC-04 also catches a tracked .claude file whose name git would quote', () => {
+  const dirty = gitDir({ 'README.md': 'x', '.claude/a\tb.md': 'x' })
+  execFileSync('git', ['add', '-A'], { cwd: dirty })
+  assert.equal(sh(dirty, 'sec-04.sh').code, 1)
 })

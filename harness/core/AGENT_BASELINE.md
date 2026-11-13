@@ -30,6 +30,8 @@
 15. **Read the project doc:** always read the project root’s `AGENTS.md` for project-specific routing before doing work.
 16. **Cloud/infra writes need consent + double validation:** Cloudflare (MCP/wrangler), Supabase, Netlify, DNS, storage buckets, payment providers. Reads are free. Any write (create, update, delete, deploy) requires: (a) explicit human OK for that exact change in this session, (b) pre-check: show the exact change, what it touches, what could break, and the rollback, (c) post-check: verify nothing existing broke (site, DNS, app). Full API access granted ≠ permission to change.
 17. **Package manager:** use pnpm. Never run `npm` or `npx` (known security failures); use `pnpm` and `pnpm dlx` instead.
+18. **`.claude/` never goes to git:** in every project the `.claude/` folder stays out of the repository, at any depth. It is in the project's `.gitignore` and nothing under it is tracked (SEC-04). If it is tracked, stop and tell {{OWNER}}; untrack it with `git rm --cached` only when {{OWNER}} asks.
+19. **Contact email in a User-Agent:** when a request to any website, API or service needs a contact email in the `User-Agent` (or any header or payload that asks for one), use exactly `hola@google.es`. Never {{OWNER}}'s real address or any other real one.
 
 **Mechanical enforcement:** see `{{CORE}}templates/verify-template.sh.md` (Clean Architecture boundary check, file length, no `any`, lint, tests) and `tools/lint-harness.sh` (doc-level checks). Rule packs in `{{ABMH}}packs/` give each rule an id and a named check; `{{ABMH}}checks/check.sh <gate>` runs them.
 

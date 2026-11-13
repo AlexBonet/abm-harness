@@ -17,28 +17,58 @@ mig_dir() {
 }
 
 mig_scan() {
-  find "$MIG_DIR" -maxdepth 1 -type f -name '*.sql' | sed 's|.*/||' | sort | awk -v pattern="$MIG_PATTERN" -v from="$MIG_FROM" '
-    function literal(text,    out, i, c) {
-      out = ""
-      for (i = 1; i <= length(text); i++) {
-        c = substr(text, i, 1)
-        out = out (c == "." ? "[.]" : c)
-      }
-      return out
+  { { cat "$MIG_BASELINE_FILE"; echo; } | sed -e 's/\r$//' -e '/^[[:space:]]*\(#\|$\)/d' -e 's/^/B\t/'; find "$MIG_DIR" -maxdepth 1 -type f -name '*.sql' | sed 's|.*/||' | sort | sed 's/^/F\t/'; } | awk -F'\t'  -v pattern="$MIG_PATTERN" -v from="$MIG_FROM" -v prefixes="$MIG_PREFIXES" -v companions="$MIG_COMPANIONS" -v has_baseline="$MIG_HAS_BASELINE" '
+    function literal(text) { gsub(/[.]/, "[.]", text); return text }
+    function starts(text, head) { return head != "" && substr(text, 1, length(head)) == head }
+    function split_family(text,    i) {
+      family = "-"; body = text
+      for (i = 1; i <= families; i++) if (starts(text, family_list[i])) { family = family_list[i]; body = substr(text, length(family) + 1); return }
     }
+    function split_companion(text,    i) {
+      for (i = 1; i <= kinds; i++) if (starts(text, companion_list[i])) { family = "-"; body = substr(text, length(companion_list[i]) + 1); return }
+      split_family(text) }
+    $1 == "B" { listed[$2] = 1; split_companion($2); if (body ~ regex) print "BASE\t" (substr(body, plen + 1, width) + 0) "\t" $2 "\t" family; next }
     BEGIN {
       if (pattern !~ /^[A-Za-z0-9_.-]*N+[A-Za-z0-9_.-]*$/ || !match(pattern, /N+/)) { print "INVALID"; exit }
       width = RLENGTH
       plen = RSTART - 1
-      suffix = literal(substr(pattern, RSTART + RLENGTH))
+      tail = substr(pattern, RSTART + RLENGTH)
+      at = index(tail, "name")
+      before_name = at ? substr(tail, 1, at - 1) : tail; after_name = at ? substr(tail, at + 4) : ""
+      suffix = literal(tail)
       sub(/name/, "[A-Za-z0-9_.-]+", suffix)
       digits = ""
       for (i = 0; i < width; i++) digits = digits "[0-9]"
       regex = "^" literal(substr(pattern, 1, plen)) digits suffix "$"
+      families = split(prefixes, family_list, /[ ,]+/)
+      kinds = split(companions, companion_list, /[ ,]+/)
     }
-    $0 ~ regex { number = substr($0, plen + 1, width) + 0; print (number >= from ? "NEW" : "OLD") "\t" number "\t" $0; next }
-    match($0, /[0-9]+/) && substr($0, RSTART, RLENGTH) + 0 < from { print "OLD\t0\t" $0; next }
-    { print "BAD\t0\t" $0 }
+    {
+      name = $2
+      state = name in listed ? "OLD" : "NEW"
+      for (i = 1; i <= kinds; i++) if (starts(name, companion_list[i])) { old = state == "OLD"; state = "COMP"; companion = companion_list[i]; break }
+      family = "-"
+      body = name
+      if (state == "COMP") {
+        body = substr(name, length(companion) + 1)
+        if (body ~ regex) print "COMP\t" (substr(body, plen + 1, width) + 0) "\t" name "\t-"
+        else print (old || (has_baseline != "yes" && match(name, /[0-9]+/) && substr(name, RSTART, RLENGTH) + 0 < from) ? "OLDCOMP" : "BAD") "\t0\t" name "\t-"
+        next
+      }
+      split_family(name)
+      if (body ~ regex) {
+        raw = substr(body, plen + 1, width)
+        number = raw + 0
+        rest = substr(body, plen + width + 1)
+        stem = substr(rest, length(before_name) + 1, length(rest) - length(before_name) - length(after_name))
+        if (state == "NEW" && has_baseline != "yes" && number < from) state = "OLD"
+        print state "\t" number "\t" name "\t" family "\t" raw "\t" stem
+        next
+      }
+      if (state == "OLD") { print "OLD\t0\t" name "\t" family; next }
+      if (has_baseline != "yes" && match(name, /[0-9]+/) && substr(name, RSTART, RLENGTH) + 0 < from) { print "OLD\t0\t" name "\t-"; next }
+      print "BAD\t0\t" name "\t-"
+    }
   '
 }
 
@@ -49,6 +79,16 @@ mig_load() {
   case $MIG_FROM in
     (*[!0-9]*) echo "migrations_from must be a number"; return 2 ;;
   esac
+  MIG_PREFIXES=$(cfg migration_prefixes)
+  MIG_COMPANIONS=$(cfg migration_companions)
+  MIG_BASELINE_FILE=/dev/null
+  MIG_HAS_BASELINE=no
+  baseline=$(cfg migrations_baseline)
+  if [ -n "$baseline" ]; then
+    [ -f "$baseline" ] || { echo "migrations_baseline $baseline is not a file"; return 2; }
+    MIG_BASELINE_FILE=$baseline
+    MIG_HAS_BASELINE=yes
+  fi
   MIG_ROWS=$(mig_scan)
   case $MIG_ROWS in
     (INVALID*) echo "migration_pattern $MIG_PATTERN needs a run of N for the number, for example NNN_name.sql"; return 2 ;;

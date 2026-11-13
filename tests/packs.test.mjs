@@ -117,7 +117,7 @@ test('every pack row names an existing check and the Prueba and Seguridad gates 
     assert.deepEqual(listed.sort(), universal.sort(), name)
   }
   assert.deepEqual(ids(fs.readFileSync(path.join(HARNESS, 'packs/data.md'), 'utf8')), ['MIG-01', 'MIG-02', 'MIG-03', 'MIG-04'])
-  assert.deepEqual(ids(fs.readFileSync(path.join(HARNESS, 'packs/security.md'), 'utf8')), ['SEC-01', 'SEC-02', 'SEC-03'])
+  assert.deepEqual(ids(fs.readFileSync(path.join(HARNESS, 'packs/security.md'), 'utf8')), ['SEC-01', 'SEC-02', 'SEC-03', 'SEC-04'])
   assert.match(fs.readFileSync(path.join(HARNESS, 'gates/security.md'), 'utf8'), /check\.sh seguridad/)
   for (const [file, command] of [['release', 'despliegue'], ['design', 'diseño'], ['seo', 'seo']]) assert.match(fs.readFileSync(path.join(HARNESS, `gates/${file}.md`), 'utf8'), new RegExp(`check\\.sh ${command}`))
   assert.deepEqual(ids(fs.readFileSync(path.join(HARNESS, 'packs/deploy.md'), 'utf8')), ['DEP-01', 'DEP-02', 'DEP-03', 'DEP-04'])

@@ -16,7 +16,10 @@ Keys in `harness.yaml`, written by hand:
 - `migrations_dir:` the folder; without it `supabase/migrations`, `migrations` and `db/migrations` are tried.
 - `migration_pattern:` default `NNN_name.sql`; the run of `N` is the digit width, `name` is any name. A project can use `dev_NNN_name.sql`.
 - `migrations_from:` default `1`; files numbered below it are legacy and no MIG check looks at them.
-- Registry: any `.md` in the docs folder's `data/` that names each migration file.
+- `migrations_baseline:` optional file of exact legacy names, one per line (`#` comments allowed). With it, a file is legacy only if listed; any other file is new whatever its number, so it is fully checked. An entry numbered `migrations_from` or higher is a MIG-02 failure: the list can only shrink.
+- `migration_prefixes:` optional families such as `dev_` (`dev_NNN_name.sql`). Each family is checked for repeats; only the main family is checked for gaps.
+- `migration_companions:` optional prefixes such as `rollback_` whose files accompany a migration and are not migrations themselves.
+- `migrations_registry:` folder of `.md` files that list the migrations; default `data/` inside the docs folder. A migration is listed when a file names it, or a row holds its number and its name.
 - MIG-04 reports NOT RUN with the warning for each new or changed file; it is resolved by the Seguridad gate, not by editing the file. It compares with `ABMH_BASE` (default `HEAD`).
 
 ## Waiting for an agent

@@ -1,5 +1,5 @@
 #!/bin/sh
-# ABMS push guard (SPEC-ABMS-003 FR-07, SPEC-ABMS-012 FR-06): SEC-01 for everyone, then agents never push to main/master.
+# ABMS push guard (SPEC-ABMS-003 FR-07, SPEC-ABMS-012 FR-06): SEC-01 and SEC-04 for everyone, then agents never push to main/master.
 
 SCAN="{{ABMH}}checks/sec-01.sh"
 if [ -f "$SCAN" ]; then
@@ -7,6 +7,16 @@ if [ -f "$SCAN" ]; then
   if [ $? -eq 1 ]; then
     echo "$found" >&2
     echo "ABMS: SEC-01 encontró un posible secreto, push bloqueado. Quítalo o {{ASK_OWNER}} si es un falso positivo (lista de permitidos en la carpeta de docs)." >&2
+    exit 1
+  fi
+fi
+
+TRACKED="{{ABMH}}checks/sec-04.sh"
+if [ -f "$TRACKED" ]; then
+  found=$(sh "$TRACKED" < /dev/null 2>&1)
+  if [ $? -eq 1 ]; then
+    echo "$found" >&2
+    echo "ABMS: SEC-04 encontró ficheros de .claude/ en git, push bloqueado. Quítalos del índice con git rm --cached o {{ASK_OWNER}}." >&2
     exit 1
   fi
 fi

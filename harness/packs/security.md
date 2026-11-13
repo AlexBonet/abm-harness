@@ -1,12 +1,13 @@
 # Pack: security
 
-> **Summary:** how secrets and personal data stay out of the repository and the remote. Each rule has an id and a named check; `{{ABMH}}checks/check.sh seguridad` runs them, the `pre-push` hook runs SEC-01 on every push, and the CI also runs SEC-03.
+> **Summary:** how secrets and personal data stay out of the repository and the remote. Each rule has an id and a named check; `{{ABMH}}checks/check.sh seguridad` runs them, the `pre-push` hook runs SEC-01 and SEC-04 on every push, and the CI also runs SEC-03.
 
 | id | rule | check | type | gate |
 | --- | --- | --- | --- | --- |
 | SEC-01 | No known key pattern and no `.env` file in tracked or new files, assistant configs included | sec-01.sh | script | Seguridad |
 | SEC-02 | A rotation procedure `ROTATION.md` exists and the active `pre-push` hook runs SEC-01 | sec-02.sh | hook | Seguridad |
 | SEC-03 | No known key pattern in any line added by any commit of any branch (a key deleted later is still in history) | sec-03.sh | script | Seguridad |
+| SEC-04 | Nothing under a `.claude/` folder is tracked, at any depth | sec-04.sh | script | Seguridad |
 
 ## Settings
 
@@ -21,3 +22,4 @@ No script can judge these; they stay out until an agent check exists:
 - Nothing sensitive enters logs, fixtures or the agent's context.
 - Personal data (RGPD and LOPDGDD): what is collected, how long it is kept, how it is deleted or exported.
 - Which user data may pass through external tools.
+- Any contact email in an outgoing `User-Agent` is exactly `hola@google.es` (baseline rule 19).

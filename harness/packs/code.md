@@ -19,6 +19,9 @@
 - `domain_dir` in `{{ABMH}}harness.yaml`: the domain folder when it is not called `domain`.
 - `ui-allowlist.txt` in the docs folder: files COD-05 skips, one path per line.
 - `ABMH_BASE`: the git revision COD-07 compares against (default `HEAD`, so it sees uncommitted work only). After committing, or in CI, set it to the branch base, for example the merge-base with the main branch.
+- `web_syntax: true` in the active harness configuration opts Astro/React COD-02/03/04/05 into syntax-aware detection; other stacks and unconfigured projects keep their existing checks. It requires Node, the project's TypeScript, and its Astro compiler for `.astro` files; analysis failures block the gate.
+- `generated_sources` names an optional UTF-8 manifest for those opted-in checks only: one root-relative exact file or directory ending in `/`, followed by `|` and a reason. No globs, traversal or blanket test exemption. Review each entry; missing build output is allowed. Generated paths do not exempt other rules.
+- Syntax-aware UI detection checks JSX/Astro text and literal `alt`, `title`, `placeholder` and `aria-label` values. It preserves the test/UI allowlist policy and does not infer arbitrary runtime strings, translations or text assembled in expressions.
 
 ## Waiting for an agent
 

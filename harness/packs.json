@@ -11,7 +11,11 @@
         "checks/cod-05.sh",
         "checks/cod-06.sh",
         "checks/cod-07.sh",
-        "checks/cod-08.sh"
+        "checks/cod-08.sh",
+        "checks/web-astro.mjs",
+        "checks/web-code-check.mjs",
+        "checks/web-comments.mjs",
+        "checks/web-syntax.mjs"
       ]
     },
     "comms": {
@@ -64,7 +68,8 @@
         "checks/sec-patterns.txt",
         "checks/sec-01.sh",
         "checks/sec-02.sh",
-        "checks/sec-03.sh"
+        "checks/sec-03.sh",
+        "checks/sec-04.sh"
       ]
     },
     "deploy": {

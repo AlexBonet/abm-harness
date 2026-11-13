@@ -8,7 +8,7 @@
 - Permissions and row-level rules say what the SPEC says, no more and no less; stricter is not safer if it was not asked for.
 - Personal data: what is stored, where it goes and who can read it.
 - Dependencies added are named and justified.
-- Rules: MIG-04, SEC-01, SEC-02, SEC-03. Run `{{ABMH}}checks/check.sh seguridad`; a FAIL blocks, a NOT RUN (MIG-04 included) is reported and needs the Reviewer's pass.
+- Rules: MIG-04, SEC-01, SEC-02, SEC-03, SEC-04. Run `{{ABMH}}checks/check.sh seguridad`; a FAIL blocks, a NOT RUN (MIG-04 included) is reported and needs the Reviewer's pass.
 
 ## Who
 
