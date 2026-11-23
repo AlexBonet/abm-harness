@@ -7,4 +7,4 @@
 - Clean Architecture: Domain, then Data, then Presentation. Domain imports no framework, database, UI or I/O.
 - Zero code comments. Identifiers in English.
 - Code files at most 300 lines; split before continuing.
-- Commits only when {{OWNER}} asks in that session; never push.
+- Git: Baseline §1.10 applies (never `main`/`master`, never `push --force`); as a subagent for one T, never commit.

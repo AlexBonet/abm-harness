@@ -41,7 +41,7 @@ See `{{CORE}}AGENT_BASELINE.md` §4. Always use this exact format.
 
 ## 8. Out of Scope
 
-- Commit, push, or any Git mutation.
+- Commit to, push or merge into `main`/`master`, or `push --force` (Baseline §1.10); as a subagent for one T, commit at all (Baseline §9).
 - Read code in other projects or stacks.
 - Read SCRUM context (PROJECT_CONTEXT.md, ADRs, prompts archive) unless prompt requires.
 - Run destructive commands without asking.

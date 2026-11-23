@@ -1,7 +1,7 @@
 import { listHarnessDir } from './harness.mjs'
 
 const SHARED_SKILLS_ASSISTANTS = ['codex', 'gemini', 'cursor', 'opencode']
-const REVIEW_AGENT_PREFIX = 'abms-review-'
+const REVIEW_AGENT_PREFIX = 'abms-'
 const CLAUDE_ONLY_SKILLS = ['abms-spec-review']
 
 export function linkSpecs(selected) {

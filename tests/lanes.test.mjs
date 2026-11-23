@@ -56,7 +56,7 @@ const CARD_HEADINGS = ['## Role', '## Sees', '## Can', '## Cannot', '## Tone', '
 
 test('there is one card per agent, each with the six headings and at most 60 lines', () => {
   assert.deepEqual(
-    fs.readdirSync(path.join(HARNESS, 'agents')).filter((name) => !name.startsWith('abms-review-')).sort(),
+    fs.readdirSync(path.join(HARNESS, 'agents')).filter((name) => !name.startsWith('abms-')).sort(),
     CARDS.map((name) => `${name}.md`).sort(),
   )
   for (const name of CARDS) {
@@ -77,13 +77,13 @@ test('the Coder and Architect cards point to strict.md and strict.md exists', ()
 })
 
 test('every card, lane and gate pointer resolves to an existing file', () => {
-  const files = ['lanes', 'gates', 'agents'].flatMap((dir) => fs.readdirSync(path.join(HARNESS, dir)).filter((name) => !name.startsWith('abms-review-')).map((name) => `${dir}/${name}`))
+  const files = ['lanes', 'gates', 'agents'].flatMap((dir) => fs.readdirSync(path.join(HARNESS, dir)).filter((name) => !name.startsWith('abms-')).map((name) => `${dir}/${name}`))
   for (const rel of files) {
     for (const match of source(rel).matchAll(/\{\{ABMH\}\}([a-z/-]+\.md)/g)) assert.ok(fs.existsSync(path.join(HARNESS, match[1])), `${rel} points to ${match[1]}`)
   }
 })
 
-const installed = (dir, sub) => fs.readdirSync(path.join(dir, '.abmh', sub)).filter((name) => !name.startsWith('abms-review-')).sort()
+const installed = (dir, sub) => fs.readdirSync(path.join(dir, '.abmh', sub)).filter((name) => !name.startsWith('abms-')).sort()
 
 for (const profile of ['universal', 'abm-estricto']) {
   test(`init installs lanes, gates and cards with the ${profile} profile`, () => {
@@ -95,7 +95,7 @@ for (const profile of ['universal', 'abm-estricto']) {
     assert.equal(exists(dir, '.abmh/core/templates/SPEC-SHORT.template.md'), true)
     assert.equal(exists(dir, '.abmh/strict.md'), profile === 'abm-estricto')
     const linked = fs.readdirSync(path.join(dir, '.claude/agents')).sort()
-    assert.deepEqual(linked, fs.readdirSync(path.join(dir, '.abmh/agents')).filter((name) => name.startsWith('abms-review-')).sort())
+    assert.deepEqual(linked, fs.readdirSync(path.join(dir, '.abmh/agents')).filter((name) => name.startsWith('abms-')).sort())
     const files = ['lanes', 'gates', 'agents'].flatMap((sub) => installed(dir, sub).map((name) => `.abmh/${sub}/${name}`))
     for (const rel of files) {
       const text = read(dir, rel)

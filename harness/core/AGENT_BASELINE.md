@@ -22,8 +22,8 @@
 7. **File length (code):** ≤ 300 lines per source file. Refactor or split before continuing.
 8. **File length (AGENT_*.md):** ≤ 200 lines.
 9. **No `any` / `Any`:** strict typing, no type abuse.
-10. **Git:** `git status`, `git log`, `git diff`, `git branch -l` always allowed. Commits only when the human explicitly asks in that session — never proactively. `push`, `pull`, `merge`, `rebase`, `checkout` remain forbidden regardless of instruction (push included, even with an explicit ask — flag it and stop instead).
-11. **Destructive commands require explicit human approval:** `rm`, `rm -rf`, `git reset --hard`, `git clean -fd`, `pnpm remove`, drop table/collection, delete branch, force-push.
+10. **Git:** on any branch other than `main`/`master`, every git action is allowed without asking: commit, push, pull, merge, rebase, checkout, create and delete branches. `main`/`master` belong to {{OWNER}}: never commit to, push, merge into, reset or delete them, unless the project's `AGENTS.md` names an exception. Never `push --force` on any branch. Each project's `AGENTS.md` names its working branch; open a separate branch only for large or risky work (always-SDD items, work that may not ship) and delete it after merging. Commits are small and finished: one whole task or one T, with a clear message.
+11. **Destructive commands require explicit human approval:** `rm`, `rm -rf`, `git reset --hard`, `git clean -fd`, `pnpm remove`, drop table/collection.
 12. **MEMORY.md size:** active `MEMORY.md` ≤ 30 KB. Archive older content to `archive/memory-{date}.md`. Each entry ≤ 600 B, only what is not derivable from code, git, SPEC or the tracker; session detail goes to `archive/` or the ticket. Archive an entry when its task closes, not when the file fills.
 13. **SPEC size:** each `SPEC-*.md` ≤ 8 KB. Split by concern if larger.
 14. **i18n:** no hardcoded UI strings. Use the project's i18n system.
@@ -147,6 +147,7 @@ Spawn a subagent only for a named reason, stated in one line before spawning:
 - **Context backstop:** a long session hands its next bounded unit to a fresh worker.
 - **Independent verifier:** tier `alto`.
 - **Reviewer:** always, once per whole task (Revisión gate); this is not optional and needs no reason line.
+- **Orchestrated build:** the default when a task has two or more T's, or one T worth several minutes. The main session (the strongest model) plans, splits the work into T's and hands each T to the `abms-coder` subagent (Sonnet). Each hand-off names the T, its acceptance check, the files it may touch and the SPEC section. The main session judges every result against that check and the evidence returned, and sends it back with the reason when it is not done. T's run in parallel only when their file lists are disjoint; otherwise one after another, never in worktrees. The main session writes code itself only for a T under ~20 lines or after a coder failed twice. Coders do not commit or launch the Reviewer: the main session commits each accepted T and runs the Revisión gate once at the end.
 
 No reason → work inline. A subagent costs a fresh session and quota.
 

@@ -113,7 +113,7 @@ Reply with the first line exactly APPROVED or REJECTED, with nothing else on it.
       ABMH_REVIEWING=1 codex exec -m "$model" -s read-only --skip-git-repo-check -C "$PROJECT" -o "$out" "$prompt" < /dev/null > "$log" 2>&1
       ;;
     claude)
-      (cd "$PROJECT" && ABMH_REVIEWING=1 claude -p --model "$model" --add-dir "$ABMH_DIR" --allowedTools "Read Grep Glob Bash(git diff:*) Bash(git status:*) Bash(git log:*) Bash(git show:*) Bash(git ls-files:*)" --disallowedTools "Edit Write NotebookEdit" "$prompt" < /dev/null > "$out" 2> "$log")
+      (cd "$PROJECT" && ABMH_REVIEWING=1 claude -p --model "$model" --add-dir "$ABMH_DIR" --allowedTools "Read Grep Glob Bash(git diff:*) Bash(git status:*) Bash(git log:*) Bash(git show:*) Bash(git ls-files:*)" --disallowedTools "Edit Write NotebookEdit" -- "$prompt" < /dev/null > "$out" 2> "$log")
       ;;
   esac
   verdict=""

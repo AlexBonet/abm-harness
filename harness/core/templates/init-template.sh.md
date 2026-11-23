@@ -12,7 +12,7 @@ STACK_NAME="{STACK_NAME}"            # web | android | shared
 DEPENDENCIES=({DEPENDENCY_LIST})     # e.g. "astro" "react" "firebase" "@supabase"
 TOOL="{BUILD_TOOL}"                  # pnpm | npm | gradle
 SRC_PATHS=({SRC_PATH_LIST})          # e.g. "src/" "app/src/main/java/"
-SHARED_REL="../shared-domain"        # path to shared-domain relative to repo root
+SHARED_REL="../00-docs"              # path to the docs folder relative to repo root
 # ============================================================
 
 PASS=0
@@ -41,7 +41,7 @@ BRANCH=$(git branch --show-current 2>/dev/null || echo "unknown")
 ok "Current branch: $BRANCH"
 
 # ───────────────────────────────────────────
-# 2. Required artifacts (shared-domain/)
+# 2. Required artifacts (00-docs/)
 # ───────────────────────────────────────────
 section "Required artifacts"
 
