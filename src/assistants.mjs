@@ -1,7 +1,7 @@
 import { listHarnessDir } from './harness.mjs'
 
 const SHARED_SKILLS_ASSISTANTS = ['codex', 'gemini', 'cursor', 'opencode']
-const REVIEW_AGENT_PREFIX = 'abms-'
+const CLAUDE_AGENT_PREFIX = 'abms-'
 const CLAUDE_ONLY_SKILLS = ['abms-spec-review']
 
 export function linkSpecs(selected) {
@@ -11,7 +11,7 @@ export function linkSpecs(selected) {
     for (const skill of skills) {
       specs.push({ path: `.claude/skills/${skill}`, target: `.abmh/skills/${skill}`, group: 'claude' })
     }
-    for (const agent of listHarnessDir('agents').filter((name) => name.startsWith(REVIEW_AGENT_PREFIX))) {
+    for (const agent of listHarnessDir('agents').filter((name) => name.startsWith(CLAUDE_AGENT_PREFIX))) {
       specs.push({ path: `.claude/agents/${agent}`, target: `.abmh/agents/${agent}`, group: 'claude' })
     }
   }
