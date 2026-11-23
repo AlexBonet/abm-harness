@@ -21,7 +21,7 @@ case ${1:-} in
     [ -n "$session" ] && [ -f "$state/session-$session" ] && [ "$(cat "$state/session-$session")" = "$fp" ] && exit 0
     [ -f "$state/$fp.md" ] && exit 0
     where=$(printf '%s' "$ABMH_DIR" | tr '\n\r\t' '   ' | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g')
-    printf '{"decision":"block","reason":"ABMH Revision gate: this session changed files and the current diff (%s) has no Reviewer verdict. If the task is done, run: sh %s/reviewer/review.sh --coder claude --size small|large --task <what was asked>. APPROVED closes; first REJECTED: fix and run it again; second REJECTED: stop and tell the owner why. If you are mid-task or waiting for the owner, say so in one line and stop."}\n' "$fp" "$where"
+    printf '{"decision":"block","reason":"ABMH Revision gate: this session changed files and the current diff (%s) has no Reviewer verdict. If the task is done, run: sh %s/reviewer/review.sh --coder claude --size small|large --task <what was asked> --claims <what you will tell the owner you did>. APPROVED closes; first REJECTED: fix and run it again; second REJECTED: stop and tell the owner why. If you are mid-task or waiting for the owner, say so in one line and stop."}\n' "$fp" "$where"
     exit 0
     ;;
 esac

@@ -4,7 +4,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 
 usage() {
   echo "review.sh: $1" >&2
-  echo "usage: review.sh --coder claude|codex --size small|large [--task <what was asked>] [--owner-ok]" >&2
+  echo "usage: review.sh --coder claude|codex --size small|large [--task <what was asked>] [--claims <what you will tell the owner you did>] [--owner-ok]" >&2
   exit 2
 }
 
@@ -12,11 +12,13 @@ coder=""
 size=""
 owner_ok=0
 task="(not given)"
+claims=""
 while [ $# -gt 0 ]; do
   case $1 in
     --coder) [ $# -ge 2 ] || usage "--coder needs a value"; coder=$2; shift 2 ;;
     --size) [ $# -ge 2 ] || usage "--size needs a value"; size=$2; shift 2 ;;
     --task) [ $# -ge 2 ] || usage "--task needs a value"; task=$2; shift 2 ;;
+    --claims) [ $# -ge 2 ] || usage "--claims needs a value"; claims=$2; shift 2 ;;
     --owner-ok) owner_ok=1; shift ;;
     *) usage "unknown argument $1" ;;
   esac
@@ -81,7 +83,13 @@ fp=$(fingerprint)
 baseline="$ABMH_DIR/core/AGENT_BASELINE.md"
 [ -f "$baseline" ] || baseline="$ABMH_DIR/AGENT_BASELINE.md"
 
-scope="Round 1: a full review."
+scope="Round 1: a full review. REJECT only for a blocking issue: a broken project rule, a requirement missing or done wrong, a bug, a security hole, data loss, or a coder claim the evidence does not support. List minor issues (naming, style, small cleanups) under a 'Notes:' line; notes do not block an APPROVED."
+if [ -n "$claims" ]; then
+  claims_text="Coder's claims (what it will tell the owner it did; you have not seen its reasoning): $claims
+Check each claim against the diff and anything you can run or read. A claim with no evidence, or one the evidence contradicts, is a finding: quote the claim and say what is missing. Do not accept a claim just because it is stated."
+else
+  claims_text="Coder's claims: (not given). Judge the diff only."
+fi
 if [ "$round" -eq 2 ] && [ -f "$findings_file" ]; then
   scope="Round 2: the round-1 verdict and findings are in $findings_file. Check that each round-1 finding is fixed or rejected with a reason that holds. REJECT only for a round-1 finding that is still open, or for a new severe defect: security hole, data loss, broken core behaviour, or part of the task not done. List any other new issue under a 'Notes:' line; notes do not block an APPROVED."
 fi
@@ -94,6 +102,7 @@ run_family() {
   log="$state/$fp.$family.log"
   prompt="You are the Reviewer of this project's ABMH harness, with clean context: you have not seen the coder's reasoning. Read $ABMH_DIR/agents/reviewer.md, $ABMH_DIR/gates/review.md and section 8 of $baseline.
 Task that was asked: $task
+$claims_text
 Review the uncommitted changes in this folder: run 'git diff HEAD -- .' and 'git status --porcelain -- .', and read new untracked files. Read-only: do not edit anything, and do not read secrets (.env files, credentials, keys, auth or token files).
 Task size: $size. Review depth: the tier of section 8 that fits the change.
 $scope

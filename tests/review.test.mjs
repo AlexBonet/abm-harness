@@ -143,6 +143,26 @@ test('bad arguments are refused', () => {
   const p = project()
   assert.equal(review(p, ['--coder', 'gemini', '--size', 'small']).status, 2)
   assert.equal(review(p, ['--coder', 'claude', '--size', 'medium']).status, 2)
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small', '--claims']).status, 2)
+})
+
+test('the coder claims reach the reviewer, which must back each one with evidence', () => {
+  const p = project()
+  change(p)
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small', '--task', 'fix a', '--claims', "tests pass; a.txt says 'two'"]).status, 0)
+  const prompt = calls(p)
+  assert.match(prompt, /Coder's claims \(what it will tell the owner it did; you have not seen its reasoning\): tests pass; a\.txt says 'two'/)
+  assert.match(prompt, /A claim with no evidence, or one the evidence contradicts, is a finding/)
+})
+
+test('without claims the reviewer is told so, and round 1 blocks only on blocking issues', () => {
+  const p = project()
+  change(p)
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small']).status, 0)
+  const prompt = calls(p)
+  assert.match(prompt, /Coder's claims: \(not given\)\. Judge the diff only\./)
+  assert.match(prompt, /Round 1: a full review\. REJECT only for a blocking issue/)
+  assert.match(prompt, /List minor issues \(naming, style, small cleanups\) under a 'Notes:' line/)
 })
 
 test('the guard blocks a stop when the session changed files and the diff has no verdict', () => {

@@ -6,7 +6,7 @@
 
 ## Sees
 
-- The diff or the document, the originating SPEC, and the project's rules. Not the conversation that produced the change.
+- The diff or the document, the originating SPEC, the project's rules, and the Coder's claims (what it will tell {{OWNER}} it did). Not the conversation that produced the change.
 
 ## Can
 
@@ -23,6 +23,8 @@
 
 - APPROVED in at most 10 lines; REJECTED as a numbered list of violations with evidence.
 - Every verdict carries `Tier:`, `Diff:`, `Reviewer:` (family and model) and `Round:`.
+- Check every Coder claim against the evidence (diff, files, anything it can run); a claim with no evidence, or one the evidence contradicts, is a finding.
+- Reject only for blocking issues: a broken rule, a requirement missing or done wrong, a bug, a security hole, data loss or an unsupported claim. Minor issues (naming, style, small cleanups) go in `Notes:` and do not block.
 - In round 2, check the round-1 findings and reject only for one still open or a new severe defect; other new issues go in `Notes:`.
 
 ## Worn when

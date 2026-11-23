@@ -6,6 +6,8 @@
 
 - A Reviewer with clean context (it has not seen the Coder's reasoning) reviews the diff or the document at the depth of the tier (`{{CORE}}AGENT_BASELINE.md` §8).
 - Every finding is checked against the code before it is applied; a finding the code does not support is rejected with one line.
+- Every claim the Coder will make to {{OWNER}} is passed with `--claims` and checked against the evidence. The Post-Flight report repeats only claims the Reviewer saw.
+- Only blocking issues reject (broken rule, missing or wrong requirement, bug, security hole, data loss, unsupported claim); minor issues go in `Notes:` from round 1.
 - Every decision is logged in the SPEC's decision log, or in the Post-Flight `Decisions:` line when there is no SPEC.
 
 ## Who
@@ -16,7 +18,7 @@
   - Large task → Claude Sonnet, or the stronger Codex model.
   - Small task → Claude Haiku, or the cheaper Codex model.
   - Large means tier `alto`, more than one module, or more than ~150 changed lines. Anything else is small.
-- **How:** `sh {{ABMH}}reviewer/review.sh --coder <claude|codex> --size <small|large> --task "<what was asked>"`, the same command after a fix. It picks family and model (and the other family if the first gives no verdict), raises the size past 150 changed lines, counts the rounds itself, records the verdict for the current diff and refuses a third round in a row without `--owner-ok`. Model names can be changed in `harness.yaml` with `reviewer_<family>_<size>`.
+- **How:** `sh {{ABMH}}reviewer/review.sh --coder <claude|codex> --size <small|large> --task "<what was asked>" --claims "<what you will tell {{OWNER}} you did: one short line per claim, e.g. tests pass, migration added>"`, the same command after a fix. The Reviewer checks each claim against the evidence; a claim it cannot back is a finding. The Reviewer often cannot run commands itself, so for a claim about a command you ran (tests, `verify.sh`), save its output to a file outside the repo and name that file in the claim. It picks family and model (and the other family if the first gives no verdict), raises the size past 150 changed lines, counts the rounds itself, records the verdict for the current diff and refuses a third round in a row without `--owner-ok`. Model names can be changed in `harness.yaml` with `reviewer_<family>_<size>`.
 - **Guard:** with Claude, a Stop hook in `.claude/settings.json` blocks closing a turn once while the session's diff has no verdict.
 
 ## Rounds
