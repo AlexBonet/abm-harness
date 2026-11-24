@@ -176,3 +176,17 @@ test('COD-10 fails when a changed file flips its line endings, passes when they 
   assert.match(bad.out, /src\/new file\.ts: line endings changed from LF to CRLF/)
   assert.equal(sh(project({ git: false }), 'cod-10.sh').code, 2)
 })
+
+test('COD-10 catches a partial conversion and follows the repo eol settings', () => {
+  const { dir } = committed({ 'src/Map.tsx': 'a\r\nb\r\nc\r\n' }, ['astro-react'])
+  write(dir, 'src/Map.tsx', 'a\r\nb\nc\n')
+  const bad = sh(dir, 'cod-10.sh')
+  assert.deepEqual([bad.code, bad.out.trim()], [1, 'src/Map.tsx: line endings changed from CRLF to mixed'])
+  const auto = project({ stacks: ['astro-react'] })
+  spawnSync('git', ['-C', auto, 'config', 'core.autocrlf', 'true'])
+  write(auto, 'src/Win.ts', 'a\r\nb\r\n')
+  spawnSync('git', ['-C', auto, 'add', '-A'])
+  spawnSync('git', ['-C', auto, '-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qm', 'base'])
+  write(auto, 'src/Win.ts', 'a\r\nb\r\nc\r\n')
+  assert.equal(sh(auto, 'cod-10.sh').code, 0)
+})

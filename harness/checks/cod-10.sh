@@ -6,8 +6,14 @@ base=${ABMH_BASE:-HEAD}
 git rev-parse --verify -q "$base" > /dev/null || { echo "no base revision to compare"; exit 2; }
 cr=$(printf '\r')
 
-crlf_lines() {
-  grep -c "$cr\$" || true
+endings() {
+  text=$(cat; printf x)
+  newlines=$(printf '%s' "$text" | tr -cd '\n' | wc -c | tr -d ' ')
+  crlf=$(printf '%s' "$text" | grep -c "$cr\$" || true)
+  if [ "$crlf" -eq 0 ]; then echo LF
+  elif [ "$crlf" -ge "$newlines" ]; then echo CRLF
+  else echo mixed
+  fi
 }
 
 changed=$(git -c core.quotePath=false diff --name-only --relative --diff-filter=M "$base" | grep -v '^\.abmh/')
@@ -15,13 +21,9 @@ found=""
 while IFS= read -r file; do
   [ -n "$file" ] && [ -f "$file" ] || continue
   grep -Iq . "$file" 2> /dev/null || continue
-  before=$(git show "$base:./$file" 2> /dev/null | crlf_lines)
-  after=$(crlf_lines < "$file")
-  if [ "$before" -gt 0 ] && [ "$after" -eq 0 ]; then
-    found="$found$file: line endings changed from CRLF to LF\n"
-  elif [ "$before" -eq 0 ] && [ "$after" -gt 0 ]; then
-    found="$found$file: line endings changed from LF to CRLF\n"
-  fi
+  before=$(git cat-file --filters "$base:./$file" 2> /dev/null | endings)
+  after=$(endings < "$file")
+  [ "$before" = mixed ] || [ "$before" = "$after" ] || found="$found$file: line endings changed from $before to $after\n"
 done <<LIST
 $changed
 LIST
