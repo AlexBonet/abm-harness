@@ -12,6 +12,7 @@
         "checks/cod-06.sh",
         "checks/cod-07.sh",
         "checks/cod-08.sh",
+        "checks/cod-10.sh",
         "checks/web-astro.mjs",
         "checks/web-code-check.mjs",
         "checks/web-comments.mjs",

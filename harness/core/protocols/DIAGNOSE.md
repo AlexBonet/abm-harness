@@ -59,7 +59,7 @@ Turn the minimised repro into a failing test at a seam that exercises the real b
 
 - Loops run against local code and a local temporary Postgres, never against Supabase, Firebase or production (`AGENT_BASELINE.md` §1.16). Cloud reads are free; cloud writes need consent.
 - Quote `<REDACTED>` in place of keys, tokens and auth headers in every command and output shown.
-- Commits only when the human asks (`AGENT_BASELINE.md` §1.10).
+- Git follows `AGENT_BASELINE.md` §1.10: commits on the working branch, never on `main`/`master` or with `push --force`; a fix lands in a whole, reviewed commit.
 
 ---
 
