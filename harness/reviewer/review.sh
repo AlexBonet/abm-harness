@@ -4,7 +4,7 @@ HERE=$(cd "$(dirname "$0")" && pwd)
 
 usage() {
   echo "review.sh: $1" >&2
-  echo "usage: review.sh --coder claude|codex --size small|large [--task <what was asked>] [--claims <what you will tell the owner you did>] [--owner-ok]" >&2
+  echo "usage: review.sh --coder claude|codex --size small|large [--task <what was asked>] [--claims <what you will tell the owner you did>] [--base <commit>] [--owner-ok]" >&2
   exit 2
 }
 
@@ -13,12 +13,14 @@ size=""
 owner_ok=0
 task="(not given)"
 claims=""
+base_arg=""
 while [ $# -gt 0 ]; do
   case $1 in
     --coder) [ $# -ge 2 ] || usage "--coder needs a value"; coder=$2; shift 2 ;;
     --size) [ $# -ge 2 ] || usage "--size needs a value"; size=$2; shift 2 ;;
     --task) [ $# -ge 2 ] || usage "--task needs a value"; task=$2; shift 2 ;;
     --claims) [ $# -ge 2 ] || usage "--claims needs a value"; claims=$2; shift 2 ;;
+    --base) [ $# -ge 2 ] || usage "--base needs a value"; base_arg=$2; shift 2 ;;
     --owner-ok) owner_ok=1; shift ;;
     *) usage "unknown argument $1" ;;
   esac
@@ -27,6 +29,10 @@ done
 case $coder in claude|codex) ;; *) usage "--coder must be claude or codex" ;; esac
 case $size in small|large) ;; *) usage "--size must be small or large" ;; esac
 in_git || usage "not inside a git repository"
+if [ -n "$base_arg" ]; then
+  REVIEW_BASE=$(git -C "$PROJECT" rev-parse -q --verify "$base_arg^{commit}") || usage "--base $base_arg is not a commit"
+  export REVIEW_BASE
+fi
 
 state=$(state_dir)
 streak_file="$state/rejected-streak"
@@ -103,7 +109,7 @@ run_family() {
   prompt="You are the Reviewer of this project's ABMH harness, with clean context: you have not seen the coder's reasoning. Read $ABMH_DIR/agents/reviewer.md, $ABMH_DIR/gates/review.md and section 8 of $baseline.
 Task that was asked: $task
 $claims_text
-Review the uncommitted changes in this folder: run 'git diff HEAD -- .' and 'git status --porcelain -- .', and read new untracked files. Read-only: do not edit anything, and do not read secrets (.env files, credentials, keys, auth or token files).
+Review every change in this folder since $(base): run 'git diff $(base) -- .', 'git log --oneline $(base)..HEAD' and 'git status --porcelain -- .', and read new untracked files. Read-only: do not edit anything, and do not read secrets (.env files, credentials, keys, auth or token files).
 Task size: $size. Review depth: the tier of section 8 that fits the change.
 $scope
 Reply with the first line exactly APPROVED or REJECTED, with nothing else on it. Lines 2 to 5, in this order and exactly: 'Tier: <pasivo|medio|alto>', 'Diff: $fp', 'Reviewer: $family $model', 'Round: $round'. On REJECTED, add a numbered list of findings with file:line evidence. At most 30 lines."

@@ -161,3 +161,18 @@ test('review fixes: COD-07 ignores the installed harness files, COD-09 ignores p
   const calls = project({ files: { 'package.json': `{"scripts":{"a":"echo && ${runner} x"}}`, 'ci.yml': `jobs:\n  - run: ${manager} test\n    run: |\n      ${manager} ci\n` } })
   assert.match(sh(calls, 'cod-09.sh').out, /package\.json:1[^\n]*\nci\.yml:2[^\n]*\nci\.yml:4/)
 })
+
+test('COD-10 fails when a changed file flips its line endings, passes when they are kept, NOT RUN outside git', () => {
+  const { dir } = committed({ 'src/Map.tsx': 'a\r\nb\r\n', 'src/b.ts': 'x\n', 'src/new file.ts': 'n\n' }, ['astro-react'])
+  assert.equal(sh(dir, 'cod-10.sh').code, 0)
+  write(dir, 'src/Map.tsx', 'a\r\nb\r\nc\r\n')
+  write(dir, 'src/b.ts', 'y\n')
+  assert.equal(sh(dir, 'cod-10.sh').code, 0)
+  write(dir, 'src/Map.tsx', 'a\nb\nc\n')
+  write(dir, 'src/new file.ts', 'n\r\n')
+  const bad = sh(dir, 'cod-10.sh')
+  assert.equal(bad.code, 1)
+  assert.match(bad.out, /src\/Map\.tsx: line endings changed from CRLF to LF/)
+  assert.match(bad.out, /src\/new file\.ts: line endings changed from LF to CRLF/)
+  assert.equal(sh(project({ git: false }), 'cod-10.sh').code, 2)
+})

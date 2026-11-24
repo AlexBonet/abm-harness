@@ -276,3 +276,16 @@ test('the guard answer stays valid JSON when the harness path has quotes or back
   assert.equal(answer.decision, 'block')
   assert.ok(answer.reason.includes(`${odd}/_system/reviewer/review.sh`))
 })
+
+test('--base reviews committed work since that commit, and a bad --base is refused', () => {
+  const p = project()
+  const first = execFileSync('git', ['-C', p.dir, 'rev-parse', 'HEAD'], { encoding: 'utf8' }).trim()
+  change(p)
+  execFileSync('git', ['-C', p.dir, '-c', 'user.email=t@t', '-c', 'user.name=t', 'commit', '-qam', 'T1'])
+  assert.match(review(p, ['--coder', 'claude', '--size', 'small']).stdout, /Nothing to review/)
+  const result = review(p, ['--coder', 'claude', '--size', 'small', '--base', first])
+  assert.equal(result.status, 0, result.stderr)
+  assert.match(calls(p), new RegExp(`git diff ${first} -- \\.`))
+  assert.match(result.stdout, /Verdict: APPROVED/)
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small', '--base', 'nope']).status, 2)
+})

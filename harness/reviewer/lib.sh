@@ -12,6 +12,7 @@ cfg() {
 }
 
 base() {
+  [ -n "${REVIEW_BASE:-}" ] && { echo "$REVIEW_BASE"; return; }
   git -C "$PROJECT" rev-parse -q --verify HEAD 2> /dev/null || echo "$EMPTY_TREE"
 }
 
@@ -20,7 +21,8 @@ untracked() {
 }
 
 has_changes() {
-  [ -n "$(git -C "$PROJECT" status --porcelain -- . 2> /dev/null)" ]
+  [ -n "$(git -C "$PROJECT" status --porcelain -- . 2> /dev/null)" ] && return 0
+  [ -n "${REVIEW_BASE:-}" ] && ! git -C "$PROJECT" diff --quiet "$REVIEW_BASE" -- .
 }
 
 fingerprint() {
