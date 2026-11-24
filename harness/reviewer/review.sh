@@ -110,6 +110,7 @@ run_family() {
 Task that was asked: $task
 $claims_text
 Review every change in this folder since $(base): run 'git diff $(base) -- .', 'git log --oneline $(base)..HEAD' and 'git status --porcelain -- .', and read new untracked files. Read-only: do not edit anything, and do not read secrets (.env files, credentials, keys, auth or token files).
+Before the verdict ask two questions: does something already in the project do this job (a new duplicate is a finding)? What in the diff was not asked for and can go (unrequested scope is a finding)?
 Task size: $size. Review depth: the tier of section 8 that fits the change.
 $scope
 Reply with the first line exactly APPROVED or REJECTED, with nothing else on it. Lines 2 to 5, in this order and exactly: 'Tier: <pasivo|medio|alto>', 'Diff: $fp', 'Reviewer: $family $model', 'Round: $round'. On REJECTED, add a numbered list of findings with file:line evidence. At most 30 lines."

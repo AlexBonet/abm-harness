@@ -289,3 +289,11 @@ test('--base reviews committed work since that commit, and a bad --base is refus
   assert.match(result.stdout, /Verdict: APPROVED/)
   assert.equal(review(p, ['--coder', 'claude', '--size', 'small', '--base', 'nope']).status, 2)
 })
+
+test('the reviewer is asked whether the job already exists and what can go', () => {
+  const p = project()
+  change(p)
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small']).status, 0)
+  assert.match(calls(p), /already in the project do this job/)
+  assert.match(calls(p), /not asked for and can go/)
+})
