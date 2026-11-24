@@ -4,8 +4,6 @@
 
 > **Docs folder:** `00-docs/` in migrated projects, `shared-domain/` in projects not yet migrated. Any `shared-domain/` path in this harness means the project's docs folder, whichever name it has.
 
----
-
 ## 1. Hard Rules
 
 ### Code quality principles (apply to ALL code)
@@ -18,24 +16,22 @@
 
 ### Mechanical rules
 
-6. **Code language:** all identifiers, variables, functions, file names in English. Zero code comments.
-7. **File length (code):** ≤ 300 lines per source file. Refactor or split before continuing.
+6. **Code language:** all identifiers, variables, functions, file names in English. Zero code comments (COD-03).
+7. **File length (code):** ≤ 300 lines per source file (COD-02). Refactor or split before continuing.
 8. **File length (AGENT_*.md):** ≤ 200 lines.
-9. **No `any` / `Any`:** strict typing, no type abuse.
+9. **No `any` / `Any`:** strict typing, no type abuse (COD-04).
 10. **Git:** on any branch other than `main`/`master`, every git action is allowed without asking: commit, push, pull, merge, rebase, checkout, create and delete branches. `main`/`master` belong to {{OWNER}}: never commit to, push, merge into, reset or delete them, unless the project's `AGENTS.md` names an exception. Never `push --force` on any branch. Each project's `AGENTS.md` names its working branch; open a separate branch only for large or risky work (always-SDD items, work that may not ship) and delete it after merging. Commits are small and finished: one whole task or one T, with a clear message.
 11. **Destructive commands require explicit human approval:** `rm`, `rm -rf`, `git reset --hard`, `git clean -fd`, `pnpm remove`, drop table/collection.
-12. **MEMORY.md size:** active `MEMORY.md` ≤ 30 KB. Archive older content to `archive/memory-{date}.md`. Each entry ≤ 600 B, only what is not derivable from code, git, SPEC or the tracker; session detail goes to `archive/` or the ticket. Archive an entry when its task closes, not when the file fills.
+12. **MEMORY.md size:** active `MEMORY.md` ≤ 8 KB in `00-docs/` (≤ 30 KB while the project is not migrated), each entry ≤ 600 B (COM-02). Archive older content to `archive/memory-{date}.md`. Keep only what is not derivable from code, git, SPEC or the tracker; session detail goes to `archive/` or the ticket. Archive an entry when its task closes, not when the file fills.
 13. **SPEC size:** each `SPEC-*.md` ≤ 8 KB. Split by concern if larger.
-14. **i18n:** no hardcoded UI strings. Use the project's i18n system.
+14. **i18n:** no hardcoded UI strings. Use the project's i18n system (COD-05).
 15. **Read the project doc:** always read the project root’s `AGENTS.md` for project-specific routing before doing work.
 16. **Cloud/infra writes need consent + double validation:** Cloudflare (MCP/wrangler), Supabase, Netlify, DNS, storage buckets, payment providers. Reads are free. Any write (create, update, delete, deploy) requires: (a) explicit human OK for that exact change in this session, (b) pre-check: show the exact change, what it touches, what could break, and the rollback, (c) post-check: verify nothing existing broke (site, DNS, app). Full API access granted ≠ permission to change.
-17. **Package manager:** use pnpm. Never run `npm` or `npx` (known security failures); use `pnpm` and `pnpm dlx` instead.
+17. **Package manager:** use pnpm. Never run `npm` or `npx` (known security failures); use `pnpm` and `pnpm dlx` instead (COD-09).
 18. **`.claude/` never goes to git:** in every project the `.claude/` folder stays out of the repository, at any depth. It is in the project's `.gitignore` and nothing under it is tracked (SEC-04). If it is tracked, stop and tell {{OWNER}}; untrack it with `git rm --cached` only when {{OWNER}} asks.
 19. **Contact email in a User-Agent:** when a request to any website, API or service needs a contact email in the `User-Agent` (or any header or payload that asks for one), use exactly `hola@google.es`. Never {{OWNER}}'s real address or any other real one.
 
 **Mechanical enforcement:** see `{{CORE}}templates/verify-template.sh.md` (Clean Architecture boundary check, file length, no `any`, lint, tests) and `tools/lint-harness.sh` (doc-level checks). Rule packs in `{{ABMH}}packs/` give each rule an id and a named check; `{{ABMH}}checks/check.sh <gate>` runs them.
-
----
 
 ## 2. Style Contract
 
@@ -45,29 +41,18 @@
 - **Documents:** every PROPOSAL, SPEC, FEATURE, STATUS and SESSION_SUMMARY opens with a ≤ 3-line summary quote (`> **Summary:**` in English files, `> **En corto:**` in Spanish human notes).
 - **Chat responses:** ≤ 5 bullets OR ≤ 15 lines. If longer, split or use "see X for detail".
 - **Reports:** each section ≤ 1 line. No prose paragraphs.
-- **Code:** self-explanatory names, no comments.
-- **File growth:** if a file grows, split before continuing. Do not exceed limits.
-- **Duplication:** if you find yourself writing a function that exists, reuse it. If you suspect a duplicate exists, grep first.
-
----
+- **Code, file growth, duplication:** as §1.2, §1.4 and §1.7: no comments, split before exceeding limits, grep and reuse before writing.
 
 ## 3. Verify Gate
 
 Before declaring any task DONE, all must pass:
 
 - [ ] `./verify.sh` (or project equivalent) exits 0
-- [ ] No source file > 300 lines
-- [ ] No `any` / `Any` in code
-- [ ] No hardcoded UI strings (i18n compliance)
-- [ ] No functions with identical signature in 2+ files
-- [ ] `MEMORY.md` in the docs folder ≤ 8 KB (≤ 30 KB while the project is not migrated to `00-docs/`)
 - [ ] `shared-domain/SPEC-*.md` each ≤ 8 KB
 - [ ] Spec axis: every requirement of the originating SPEC/TASK/FEATURE is covered and nothing unrequested was added (checked by the Reviewer, separate from the Standards axis above, at the depth of §8)
-- [ ] Rule packs: `{{ABMH}}checks/check.sh prueba` has no FAIL; a check that reports NOT RUN is listed as NOT RUN, never ticked
+- [ ] Rule packs: `{{ABMH}}checks/check.sh prueba` has no FAIL (source ≤ 300 lines COD-02, no `any` COD-04, no hardcoded UI strings COD-05, no signature in 2+ files COD-06, `MEMORY.md` size COM-02); a check that reports NOT RUN is listed as NOT RUN, never ticked
 - [ ] Revisión gate (`{{ABMH}}gates/review.md`): the Coder launched the Reviewer itself and the verdict is APPROVED for the current `Diff:`. A second REJECTED stops the task and goes to {{OWNER}}.
 - [ ] Review-during-implementation check (§10): every Reviewer finding is verified against the code and every decision is logged in the SPEC's §10. If this check fails, the task cannot be marked DONE.
-
----
 
 ## 4. Post-Flight Report
 
@@ -85,8 +70,6 @@ Pending: <what human must confirm, 1 line>
 Reversible: <yes | no> — <blast radius, 1 line>
 ```
 
----
-
 ## 5. Re-anchor Checklist
 
 Long sessions drift. Stop and re-read §1-4 of this file at any of these moments — do not rely on having read it once at session start:
@@ -99,8 +82,6 @@ Long sessions drift. Stop and re-read §1-4 of this file at any of these moments
 
 If you notice mid-session that you already skipped a Hard Rule (§1), say so in your next response instead of quietly fixing it and moving on.
 
----
-
 ## 6. Protocols
 
 Reached by pointer, loaded only when the branch applies:
@@ -109,8 +90,6 @@ Reached by pointer, loaded only when the branch applies:
 - A domain term appears that is not in the project's `shared-domain/GLOSSARY.md` → add it there first, then use it.
 - Scope of a PROPOSAL is unclear → `{{CORE}}protocols/GRILL.md`.
 - A step only the human can do (cloud console, DNS, credentials) → `{{CORE}}protocols/WIZARD.md`.
-
----
 
 ## 7. Lanes
 
@@ -160,8 +139,6 @@ For work under a SPEC (lanes SDD and SPEC corta), review happens *while* buildin
 - **Log every decision:** the agent records each decision (accepted fix, rejected finding, trade-off) in §10 "Decision log" of the SPEC: what, risk, decided by, where. Decisions that touch the core, security or an earlier decision go to {{OWNER}} (SPEC §9), not just to the log.
 - **Mandatory check:** the Verify Gate (§3) includes this review check. If it fails (unverified finding, unlogged decision, or no Reviewer pass), the task cannot be marked DONE.
 
----
-
-**Version:** ABMH v2.0 (2026-10-24: §7 lanes, §8 review depth, §9 delegation, En corto — PROPOSAL-ABMS-001; 2026-11-03: §10 review during implementation; 2026-11-11: six lanes with risk first, gates and agent cards in `{{ABMH}}` — SPEC-ABMS-010). Previous: v1.2
+**Version:** ABMH v2.1 (2026-11-24: ≤ 150 lines, checks named by id, no rule changed — SPEC-ABMS-018; 2026-10-24: §7 lanes, §8 review depth, §9 delegation, En corto — PROPOSAL-ABMS-001; 2026-11-03: §10 review during implementation; 2026-11-11: six lanes with risk first, gates and agent cards in `{{ABMH}}` — SPEC-ABMS-010). Previous: v1.2
 **Loaded by:** every `opencode.json` `instructions` array (first position); every project's `AGENTS.md` §"Re-anchor Checkpoint".
 **Do not duplicate:** project-specific `AGENT_*.md` files do NOT repeat these rules.
