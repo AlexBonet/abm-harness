@@ -9,7 +9,7 @@ Audience: both
 ## What is here
 
 - `STATUS.md`: where the project stands now and what is blocked.
-- `MEMORY.md`: what was learned and should not be forgotten. Pruned; 8 KB cap.
+- `MEMORY.md`: what was learned and should not be forgotten. Pruned; 8 KB target, 40 KB cap.
 - `GAPS.md`: what we do not know yet. Add a line instead of assuming.
 - `GLOSSARY.md`: the project's words and their single meaning.
 - `ROTATION.md`: what to do when a secret leaks: which secrets exist and the steps to replace them.

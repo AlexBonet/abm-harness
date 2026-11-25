@@ -22,8 +22,8 @@
 9. **No `any` / `Any`:** strict typing, no type abuse (COD-04).
 10. **Git:** on any branch other than `main`/`master`, every git action is allowed without asking: commit, push, pull, merge, rebase, checkout, create and delete branches. `main`/`master` belong to {{OWNER}}: never commit to, push, merge into, reset or delete them, unless the project's `AGENTS.md` names an exception. Never `push --force` on any branch. Each project's `AGENTS.md` names its working branch; open a separate branch only for large or risky work (always-SDD items, work that may not ship) and delete it after merging. Commits are small and finished: one whole task or one T, with a clear message.
 11. **Destructive commands require explicit human approval:** `rm`, `rm -rf`, `git reset --hard`, `git clean -fd`, `pnpm remove`, drop table/collection.
-12. **MEMORY.md size:** active `MEMORY.md` ≤ 8 KB in `00-docs/` (≤ 30 KB while the project is not migrated), each entry ≤ 600 B (COM-02). Archive older content to `archive/memory-{date}.md`. Keep only what is not derivable from code, git, SPEC or the tracker; session detail goes to `archive/` or the ticket. Archive an entry when its task closes, not when the file fills.
-13. **SPEC size:** each `SPEC-*.md` ≤ 8 KB. Split by concern if larger.
+12. **MEMORY.md size:** active `MEMORY.md`: target 8 KB, hard cap 40 KB; each entry ≤ 600 B (COM-02). Archive older content to `archive/memory-{date}.md`. Keep only what is not derivable from code, git, SPEC or the tracker; session detail goes to `archive/` or the ticket. Archive an entry when its task closes, not when the file fills.
+13. **SPEC size:** each `SPEC-*.md`: target 8 KB, hard cap 16 KB; the summary on top stays ≤ 3 lines. Split by concern above the cap.
 14. **i18n:** no hardcoded UI strings. Use the project's i18n system (COD-05).
 15. **Read the project doc:** always read the project root’s `AGENTS.md` for project-specific routing before doing work.
 16. **Cloud/infra writes need consent + double validation:** Cloudflare (MCP/wrangler), Supabase, Netlify, DNS, storage buckets, payment providers. Reads are free. Any write (create, update, delete, deploy) requires: (a) explicit human OK for that exact change in this session, (b) pre-check: show the exact change, what it touches, what could break, and the rollback, (c) post-check: verify nothing existing broke (site, DNS, app). Full API access granted ≠ permission to change.
@@ -48,7 +48,7 @@
 Before declaring any task DONE, all must pass:
 
 - [ ] `./verify.sh` (or project equivalent) exits 0
-- [ ] `shared-domain/SPEC-*.md` each ≤ 8 KB
+- [ ] `SPEC-*.md` each ≤ 16 KB (target 8 KB)
 - [ ] Spec axis: every requirement of the originating SPEC/TASK/FEATURE is covered and nothing unrequested was added (checked by the Reviewer, separate from the Standards axis above, at the depth of §8)
 - [ ] Rule packs: `{{ABMH}}checks/check.sh prueba` has no FAIL (source ≤ 300 lines COD-02, no `any` COD-04, no hardcoded UI strings COD-05, no signature in 2+ files COD-06, `MEMORY.md` size COM-02); a check that reports NOT RUN is listed as NOT RUN, never ticked
 - [ ] Revisión gate (`{{ABMH}}gates/review.md`): the Coder launched the Reviewer itself and the verdict is APPROVED for the current `Diff:`. A second REJECTED stops the task and goes to {{OWNER}}.

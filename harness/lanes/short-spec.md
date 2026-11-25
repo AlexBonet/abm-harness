@@ -27,4 +27,4 @@
 ## Escalates to SDD when
 
 - An always-SDD item appears: stop before that edit and ask.
-- The SPEC grows past 8 KB or needs a design decision that someone else must approve.
+- The SPEC grows past 16 KB or needs a design decision that someone else must approve.

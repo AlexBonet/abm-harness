@@ -5,7 +5,7 @@
 | id | rule | check | type | gate |
 | --- | --- | --- | --- | --- |
 | COM-01 | Every docs file declares its reader and opens with a summary quote | com-01.sh | script | Prueba |
-| COM-02 | `MEMORY.md` stays within 8 KB and each entry within 600 bytes | com-02.sh | script | Prueba |
+| COM-02 | `MEMORY.md` stays within 40 KB (target 8 KB) and each entry within 600 bytes | com-02.sh | script | Prueba |
 | COM-03 | The docs folder has a `GLOSSARY.md` | com-03.sh | script | Prueba |
 | COM-04 | `STATUS` and `LEEME` carry a recent "last reviewed" date | com-04.sh | script | Prueba |
 

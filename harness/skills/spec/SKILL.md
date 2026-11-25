@@ -35,7 +35,7 @@ Cover these, in this order, until nothing is silently assumed:
 
 ## 3. Write
 
-1. Fill `SPEC.template.md` into `specs/SPEC-NNN-{slug}.md` in the docs folder. Keep it ≤ 8 KB; if it grows, propose splitting.
+1. Fill `SPEC.template.md` into `specs/SPEC-NNN-{slug}.md` in the docs folder. Aim for ≤ 8 KB, never over 16 KB; above that, propose splitting.
 2. Every requirement must be testable. Every assumption you made while writing goes in "{{SUMMARY}}" under "Decisiones que tomó el agente" or in Open questions. Never hide one.
 3. Write the "{{SUMMARY}}" LAST: Spanish, ≤ 10 lines, plain words, no jargon.
 4. Anything the interview showed the project does not know and nobody answered goes to `GAPS.md` in the docs folder, not into the SPEC as an assumption.

@@ -21,9 +21,9 @@ test('COM-01 uses the docs folder from harness.yaml', () => {
   assert.equal(sh(dir, 'com-01.sh').code, 1)
 })
 
-test('COM-02 fails on a MEMORY over 8 KB or an entry over 600 bytes', () => {
-  const big = project({ files: { '00-docs/MEMORY.md': `${doc()}${'- x\n'.repeat(3000)}` } })
-  assert.match(sh(big, 'com-02.sh').out, /MEMORY\.md: \d+ bytes, the cap is 8192/)
+test('COM-02 fails on a MEMORY over 40 KB or an entry over 600 bytes', () => {
+  const big = project({ files: { '00-docs/MEMORY.md': `${doc()}${'- x\n'.repeat(11000)}` } })
+  assert.match(sh(big, 'com-02.sh').out, /MEMORY\.md: \d+ bytes, the cap is 40960/)
   const long = project({ files: { '00-docs/MEMORY.md': `${doc()}- ${'a'.repeat(700)}\n- short\n` } })
   const result = sh(long, 'com-02.sh')
   assert.deepEqual([result.code, result.out.trim()], [1, '00-docs/MEMORY.md:7 entry over 600 bytes'])

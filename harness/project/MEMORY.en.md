@@ -3,7 +3,7 @@
 Audience: agent
 
 > **Summary:** what the next agent must know before working. A curated note, not a diary.
-> Pruned on review; 8 KB cap. Old entries move to `MEMORY-HISTORY.md`.
+> Pruned on review; 8 KB target, 40 KB cap. Old entries move to `MEMORY-HISTORY.md`.
 > Last reviewed: YYYY-MM-DD
 
 ## Key decisions

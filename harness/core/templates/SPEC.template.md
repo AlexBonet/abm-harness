@@ -1,6 +1,6 @@
 # SPEC-NNN — {Title}
 
-> Specification artifact. Reads the PROPOSAL and defines WHAT the system must do (behavior), not HOW (design). Serves as the contract between business intent and technical implementation. Keep it ≤ 8 KB; split if it grows.
+> Specification artifact. Reads the PROPOSAL and defines WHAT the system must do (behavior), not HOW (design). Serves as the contract between business intent and technical implementation. Aim for ≤ 8 KB, never over 16 KB; split if it grows.
 
 ---
 

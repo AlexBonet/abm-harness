@@ -1,6 +1,6 @@
 # MEMORY — {PROJECT_NAME}
 
-> **Summary:** what the next agent must know before working here. A curated note, not a diary: prune on every review. Cap: 8 KB. Entries older than the current milestone move to `MEMORY-HISTORY.md`.
+> **Summary:** what the next agent must know before working here. A curated note, not a diary: prune on every review. Target 8 KB, cap 40 KB. Entries older than the current milestone move to `MEMORY-HISTORY.md`.
 >
 > Audience: agent · Last reviewed: {YYYY-MM-DD}
 
@@ -9,7 +9,7 @@
 ## Rules for this file
 
 1. **Curate, do not append forever.** When a fact stops being true or useful, delete it or move it to `MEMORY-HISTORY.md`.
-2. **Cap 8 KB.** Over the cap: move the oldest session entries and resolved backfires to `MEMORY-HISTORY.md` before adding anything.
+2. **Target 8 KB, cap 40 KB.** Over the target, prune; over the cap: move the oldest session entries and resolved backfires to `MEMORY-HISTORY.md` before adding anything.
 3. **One line per fact**, with a date and a link when a decision or ADR exists (`[[decisions/ADR-NNN]]`).
 4. **Not here:** product definition (`PROJECT_CONTEXT.md`), open questions (`GAPS.md`), state (`STATUS.md`).
 
@@ -69,4 +69,4 @@ Replace this section when the context changes. Keep it to four lines.
 
 ---
 
-**Template version:** v2.0 (curated, 8 KB cap; replaces the append-only v1.1)
+**Template version:** v2.0 (curated, 8 KB target, 40 KB cap; replaces the append-only v1.1)

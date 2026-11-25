@@ -1,6 +1,6 @@
 # SPEC-NNN — {Title}
 
-> Short SPEC for the SPEC corta lane (`{{ABMH}}lanes/short-spec.md`). Says WHAT and how it is proven, nothing else. Straight to the point; keep it ≤ 8 KB.
+> Short SPEC for the SPEC corta lane (`{{ABMH}}lanes/short-spec.md`). Says WHAT and how it is proven, nothing else. Straight to the point; aim for ≤ 8 KB, never over 16 KB.
 
 ---
 

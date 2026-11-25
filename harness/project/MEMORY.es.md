@@ -3,7 +3,7 @@
 Audience: agent
 
 > **Resumen:** lo aprendido que el siguiente agente debe saber antes de trabajar. Es una nota curada, no un diario.
-> Se poda al revisarla; tope 8 KB. Lo viejo pasa a `MEMORY-HISTORY.md`.
+> Se poda al revisarla; objetivo 8 KB, tope 40 KB. Lo viejo pasa a `MEMORY-HISTORY.md`.
 > Última revisión: AAAA-MM-DD
 
 ## Decisiones clave

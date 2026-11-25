@@ -9,7 +9,7 @@ Audience: both
 ## Qué hay aquí
 
 - `STATUS.md`: dónde está el proyecto ahora y qué está bloqueado.
-- `MEMORY.md`: lo aprendido que conviene no olvidar. Se poda; tope 8 KB.
+- `MEMORY.md`: lo aprendido que conviene no olvidar. Se poda; objetivo 8 KB, tope 40 KB.
 - `GAPS.md`: lo que todavía no sabemos. Se añade una línea en vez de suponer.
 - `GLOSSARY.md`: las palabras del proyecto y su significado único.
 - `ROTATION.md`: qué hacer si se filtra un secreto: qué secretos hay y los pasos para cambiarlos.
