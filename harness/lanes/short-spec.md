@@ -12,7 +12,7 @@
 1. Measure the risk first.
 2. Write the SPEC from `{{CORE}}templates/SPEC-SHORT.template.md` into the project docs `specs/`. No PROPOSAL, DESIGN or TASKS.
 3. {{OWNER}} confirms the summary. Nothing is built before that.
-4. Implement; tests first where the project has tests.
+4. Implement; tests first where the project has tests. Two or more T's, or one worth several minutes: orchestrated build with `abms-coder` (`{{CORE}}AGENT_BASELINE.md` §9).
 5. A clean-context Reviewer reviews the work while it is built, at tier `medio` or higher (`{{CORE}}AGENT_BASELINE.md` §8, §10). Check each finding against the code and log each decision in the SPEC.
 6. Run the Verify Gate, then launch the final Reviewer yourself (Revisión gate). A second REJECTED stops and goes to {{OWNER}}.
 

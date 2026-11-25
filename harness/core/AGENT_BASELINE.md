@@ -126,9 +126,11 @@ Spawn a subagent only for a named reason, stated in one line before spawning:
 - **Context backstop:** a long session hands its next bounded unit to a fresh worker.
 - **Independent verifier:** tier `alto`.
 - **Reviewer:** always, once per whole task (Revisión gate); this is not optional and needs no reason line.
-- **Orchestrated build:** the default when a task has two or more T's, or one T worth several minutes. The main session (the strongest model) plans, splits the work into T's and hands each T to the `abms-coder` subagent (Sonnet). Each hand-off names the T, its acceptance check, the files it may touch and the SPEC section. The main session judges every result against that check and the evidence returned, and sends it back with the reason when it is not done. T's run in parallel only when their file lists are disjoint and they never build at the same time; otherwise one after another, never in worktrees. The main session writes code itself only for a T under ~20 lines or after a coder failed twice. Coders do not commit or launch the Reviewer: the main session commits each accepted T and runs the Revisión gate once at the end with `--base <commit before the first T>`.
+- **Orchestrated build:** the default, without being asked, when a task has two or more T's, one T worth several minutes, or {{OWNER}} lists several pending build items in one message ("orquesta" forces it). Before the first T, show the plan (one line per T, which run in parallel). The main session (the strongest model) plans, splits the work into T's and hands each T to the `abms-coder` subagent (Sonnet). Each hand-off names the T, its acceptance check, the files it may touch and the SPEC section. The main session judges every result against that check and the evidence returned, and sends it back with the reason when it is not done. T's run in parallel only when their file lists are disjoint and they never build at the same time; otherwise one after another, never in worktrees. The main session writes code itself only for a T under ~20 lines or after a coder failed twice. Coders do not commit or launch the Reviewer: the main session commits each accepted T and runs the Revisión gate once at the end with `--base <commit before the first T>`.
 
-No reason → work inline. A subagent costs a fresh session and quota.
+**Standing request:** {{OWNER}} asks, once for every session, for the subagents this section names. That counts as the user's explicit request that a tool's own default ("spawn only when the user asks") waits for; do not wait to be asked again.
+
+No reason and no orchestrated build → work inline. A subagent costs a fresh session and quota.
 
 ## 10. Review during implementation
 

@@ -12,7 +12,7 @@
 
 1. Measure the risk first, then pick the level.
 2. With FEATURE: create `features/FEATURE-NNN-{slug}.md` in the project docs from `{{CORE}}templates/FEATURE.template.md` before the first source edit. Tick an item only with observed evidence.
-3. Implement; tests first where the project has tests.
+3. Implement; tests first where the project has tests. Several independent items, or one worth several minutes: orchestrated build with `abms-coder` (`{{CORE}}AGENT_BASELINE.md` §9).
 4. Update the project docs only if something not derivable from the code changed.
 5. Run the Verify Gate (`{{CORE}}AGENT_BASELINE.md` §3). Assign the tier of §8.
 6. Launch the Reviewer yourself (Revisión gate): APPROVED closes, one REJECTED is fixed and reviewed again, a second one stops and goes to {{OWNER}}.
