@@ -17,8 +17,36 @@ cfg() {
   printf '%s\n' "$value"
 }
 
+JSON_UNESCAPE='
+function hex(h,  i, n) { n = 0; for (i = 1; i <= 4; i++) n = n * 16 + index("0123456789abcdef", tolower(substr(h, i, 1))) - 1; return n }
+function utf8(n) {
+  if (n < 128) return sprintf("%c", n)
+  if (n < 2048) return sprintf("%c%c", 192 + int(n / 64), 128 + n % 64)
+  if (n < 65536) return sprintf("%c%c%c", 224 + int(n / 4096), 128 + int(n / 64) % 64, 128 + n % 64)
+  return sprintf("%c%c%c%c", 240 + int(n / 262144), 128 + int(n / 4096) % 64, 128 + int(n / 64) % 64, 128 + n % 64)
+}
+{
+  out = ""
+  for (i = 1; i <= length($0); i++) {
+    c = substr($0, i, 1)
+    if (c != "\\") { out = out c; continue }
+    c = substr($0, ++i, 1)
+    if (c == "u") {
+      n = hex(substr($0, i + 1, 4)); i += 4
+      if (n >= 55296 && n < 56320 && substr($0, i + 1, 2) == "\\u") { n = 65536 + (n - 55296) * 1024 + hex(substr($0, i + 3, 4)) - 56320; i += 6 }
+      out = out utf8(n)
+    } else if (c == "n") out = out "\n"
+    else if (c == "t") out = out "\t"
+    else if (c == "r") out = out "\r"
+    else if (c == "b") out = out "\b"
+    else if (c == "f") out = out "\f"
+    else out = out c
+  }
+  print out
+}'
+
 json_field() {
-  printf '%s' "$1" | grep -oE "\"$2\" *: *\"([^\"\\\\]|\\\\.)*\"" | head -n 1 | sed -e 's/^"[^"]*" *: *"//' -e 's/"$//' | awk '{ out = ""; for (i = 1; i <= length($0); i++) { c = substr($0, i, 1); if (c == "\\") { i++; c = substr($0, i, 1) } out = out c } print out }'
+  printf '%s' "$1" | grep -oE "\"$2\" *: *\"([^\"\\\\]|\\\\.)*\"" | head -n 1 | sed -e 's/^"[^"]*" *: *"//' -e 's/"$//' | LC_ALL=C awk "$JSON_UNESCAPE"
 }
 
 session_of() {

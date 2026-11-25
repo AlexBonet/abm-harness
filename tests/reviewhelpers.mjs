@@ -48,7 +48,7 @@ export const calls = (p) => (fs.existsSync(p.log) ? read(p.log, '') : '')
 export const change = (p, text = 'two\n') => fs.writeFileSync(path.join(p.dir, 'a.txt'), text)
 
 export function track(p, mode, input) {
-  return spawnSync('sh', [path.join(p.dir, '.abmh/reviewer/track.sh'), mode], { cwd: p.dir, env: { PATH: '/usr/bin:/bin', HOME: p.bin }, input: JSON.stringify(input), encoding: 'utf8' })
+  return spawnSync('sh', [path.join(p.dir, '.abmh/reviewer/track.sh'), mode], { cwd: p.dir, env: { PATH: '/usr/bin:/bin', HOME: p.bin }, input: typeof input === 'string' ? input : JSON.stringify(input), encoding: 'utf8' })
 }
 
 export function write(p, session, rel, text) {
