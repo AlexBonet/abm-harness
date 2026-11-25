@@ -100,3 +100,20 @@ test('a file name sent with \\u escapes is tracked as the real path', () => {
   assert.equal(fs.readFileSync(path.join(p.dir, '.git/abmh-reviews/track-s1'), 'utf8'), 'src/aé.js\n')
   assert.equal(blocks(p, 's1'), true)
 })
+
+test('making a reviewed file executable blocks again', () => {
+  const p = project()
+  guard(p, 'session-start', { session_id: 's1' })
+  write(p, 's1', 'run.sh', 'echo hi\n')
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small']).status, 0)
+  assert.equal(blocks(p, 's1'), false)
+  fs.chmodSync(path.join(p.dir, 'run.sh'), 0o755)
+  assert.equal(blocks(p, 's1'), true)
+})
+
+test('a consejero folder at the repo root counts as docs', () => {
+  const p = project()
+  guard(p, 'session-start', { session_id: 's1' })
+  write(p, 's1', 'consejero/notes.txt', 'x\n')
+  assert.equal(blocks(p, 's1'), false)
+})

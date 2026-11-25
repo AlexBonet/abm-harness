@@ -71,7 +71,8 @@ fingerprint() {
   {
     git -C "$PROJECT" diff "$(base)" --binary -- .
     untracked | while IFS= read -r file; do
-      printf '%s %s\n' "$file" "$(git -C "$PROJECT" hash-object -- "$file")"
+      mode=-; [ -x "$PROJECT/$file" ] && mode=x
+      printf '%s %s%s\n' "$file" "$(git -C "$PROJECT" hash-object -- "$file")" "$mode"
     done
   } | shasum -a 256 | cut -c1-12
 }
@@ -100,7 +101,8 @@ hashed() {
   while IFS= read -r file; do
     [ -n "$file" ] || continue
     if [ -f "$PROJECT/$file" ]; then
-      printf '%s %s\n' "$file" "$(git -C "$PROJECT" hash-object -- "$file")"
+      mode=-; [ -x "$PROJECT/$file" ] && mode=x
+      printf '%s %s%s\n' "$file" "$(git -C "$PROJECT" hash-object -- "$file")" "$mode"
     else
       printf '%s deleted\n' "$file"
     fi
