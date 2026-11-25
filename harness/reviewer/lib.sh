@@ -18,7 +18,7 @@ cfg() {
 }
 
 json_field() {
-  printf '%s' "$1" | grep -o "\"$2\" *: *\"[^\"]*\"" | head -n 1 | sed 's/.*: *"\(.*\)"$/\1/'
+  printf '%s' "$1" | grep -oE "\"$2\" *: *\"([^\"\\\\]|\\\\.)*\"" | head -n 1 | sed -e 's/^"[^"]*" *: *"//' -e 's/"$//' | awk '{ out = ""; for (i = 1; i <= length($0); i++) { c = substr($0, i, 1); if (c == "\\") { i++; c = substr($0, i, 1) } out = out c } print out }'
 }
 
 session_of() {
@@ -31,7 +31,7 @@ base() {
 }
 
 untracked() {
-  git -C "$PROJECT" -c core.quotePath=false ls-files --others --exclude-standard -- . | grep -v '/$'
+  git -C "$PROJECT" ls-files -z --others --exclude-standard -- . | tr '\0' '\n' | grep -v '/$'
 }
 
 has_changes() {
@@ -65,7 +65,7 @@ state_dir() {
 }
 
 changed_files() {
-  { git -C "$PROJECT" -c core.quotePath=false diff --name-only "$(base)" -- .; untracked; } | sort -u
+  { git -C "$PROJECT" diff -z --name-only "$(base)" -- . | tr '\0' '\n'; untracked; } | sort -u
 }
 
 hashed() {

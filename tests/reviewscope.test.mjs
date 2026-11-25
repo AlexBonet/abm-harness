@@ -59,3 +59,33 @@ test('review_docs in harness.yaml replaces the default patterns', () => {
   write(p, 's1', 'guide.md', '# guide\n')
   assert.equal(blocks(p, 's1'), true)
 })
+
+test('a file name with JSON-escaped quotes and backslashes is tracked as the real path', () => {
+  const p = project()
+  guard(p, 'session-start', { session_id: 's1' })
+  write(p, 's1', 'src/a"b\\c.js', 'x()\n')
+  assert.equal(fs.readFileSync(path.join(p.dir, '.git/abmh-reviews/track-s1'), 'utf8'), 'src/a"b\\c.js\n')
+  assert.equal(blocks(p, 's1'), true)
+})
+
+test('two Bash calls running at once in one session keep their own snapshot', () => {
+  const p = project()
+  guard(p, 'session-start', { session_id: 's1' })
+  track(p, 'pre', { session_id: 's1', tool_name: 'Bash', tool_use_id: 'one' })
+  track(p, 'pre', { session_id: 's1', tool_name: 'Bash', tool_use_id: 'two' })
+  track(p, 'post', { session_id: 's1', tool_name: 'Bash', tool_use_id: 'one' })
+  fs.writeFileSync(path.join(p.dir, 'late.js'), 'late()\n')
+  track(p, 'post', { session_id: 's1', tool_name: 'Bash', tool_use_id: 'two' })
+  assert.equal(fs.readFileSync(path.join(p.dir, '.git/abmh-reviews/track-s1'), 'utf8'), 'late.js\n')
+})
+
+test('a file edited while the reviewer runs is not covered by that verdict', () => {
+  const p = project()
+  guard(p, 'session-start', { session_id: 's1' })
+  write(p, 's1', 'src/app.js', 'run()\n')
+  const stub = path.join(p.bin, 'codex')
+  const text = fs.readFileSync(stub, 'utf8')
+  fs.writeFileSync(stub, text.replace('#!/bin/sh\n', `#!/bin/sh\nprintf 'edited during review\\n' > '${path.join(p.dir, 'src/app.js')}'\n`), { mode: 0o755 })
+  assert.equal(review(p, ['--coder', 'claude', '--size', 'small']).status, 0)
+  assert.equal(blocks(p, 's1'), true)
+})

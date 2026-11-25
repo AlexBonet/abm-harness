@@ -19,7 +19,8 @@ record() {
 }
 
 state=$(state_dir)
-mark="$state/mark-$session"
+call=$(json_field "$input" tool_use_id | tr -cd 'A-Za-z0-9_-')
+mark="$state/mark-$session${call:+-$call}"
 case ${1:-} in
   pre)
     [ -f "$state/track-$session" ] || : > "$state/track-$session"

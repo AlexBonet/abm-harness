@@ -86,6 +86,7 @@ default_model() {
 }
 
 fp=$(fingerprint)
+before=$(changed_files | counted)
 baseline="$ABMH_DIR/core/AGENT_BASELINE.md"
 [ -f "$baseline" ] || baseline="$ABMH_DIR/AGENT_BASELINE.md"
 
@@ -157,7 +158,7 @@ record="$state/$fp.md"
   echo "---"
   cat "$out"
 } > "$record"
-changed_files | counted >> "$state/reviewed"
+[ -n "$before" ] && changed_files | counted | grep -Fx -- "$before" >> "$state/reviewed"
 cat "$record"
 echo
 
