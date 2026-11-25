@@ -7,8 +7,22 @@ in_git() {
   git -C "$PROJECT" rev-parse --is-inside-work-tree > /dev/null 2>&1
 }
 
+yaml_value() {
+  [ -f "$2" ] && sed -n "s/^$1: *//p" "$2" | head -n 1 | tr -d '\r' | sed -e 's/[[:space:]]*#.*$//' -e 's/[[:space:]]*$//' -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"
+}
+
 cfg() {
-  [ -f "$ABMH_DIR/harness.yaml" ] && sed -n "s/^$1: *//p" "$ABMH_DIR/harness.yaml" | head -n 1 | tr -d '\r' | sed -e 's/[[:space:]]*#.*$//' -e 's/[[:space:]]*$//' -e 's/^"\(.*\)"$/\1/' -e "s/^'\(.*\)'$/\1/"
+  value=$(yaml_value "$1" "$ABMH_DIR/harness.yaml")
+  [ -n "$value" ] || value=$(yaml_value "$1" "$HERE/defaults.yaml")
+  printf '%s\n' "$value"
+}
+
+json_field() {
+  printf '%s' "$1" | grep -o "\"$2\" *: *\"[^\"]*\"" | head -n 1 | sed 's/.*: *"\(.*\)"$/\1/'
+}
+
+session_of() {
+  json_field "$1" session_id | tr -cd 'A-Za-z0-9_-'
 }
 
 base() {
@@ -48,4 +62,39 @@ state_dir() {
   esac
   mkdir -p "$dir"
   echo "$dir"
+}
+
+changed_files() {
+  { git -C "$PROJECT" -c core.quotePath=false diff --name-only "$(base)" -- .; untracked; } | sort -u
+}
+
+hashed() {
+  while IFS= read -r file; do
+    [ -n "$file" ] || continue
+    if [ -f "$PROJECT/$file" ]; then
+      printf '%s %s\n' "$file" "$(git -C "$PROJECT" hash-object -- "$file")"
+    else
+      printf '%s deleted\n' "$file"
+    fi
+  done
+}
+
+code_only() {
+  patterns=$(cfg review_docs)
+  set -f
+  while IFS= read -r file; do
+    keep=1
+    for pattern in $patterns; do
+      case $file in $pattern) keep=0; break ;; esac
+    done
+    [ "$keep" -eq 1 ] && printf '%s\n' "$file"
+  done
+  set +f
+}
+
+counted() {
+  changed=$(changed_files)
+  code_only | sort -u | while IFS= read -r file; do
+    printf '%s\n' "$changed" | grep -Fxq -- "$file" && printf '%s\n' "$file"
+  done | hashed
 }

@@ -157,6 +157,7 @@ record="$state/$fp.md"
   echo "---"
   cat "$out"
 } > "$record"
+changed_files | counted >> "$state/reviewed"
 cat "$record"
 echo
 
